@@ -97,8 +97,8 @@ def publicar(variable, valor):
 
 #configuracion para UDP
 monitor = ("192.168.100.9", 1234)   #ip y puerto pc windows
-local = ("192.168.100.18", 1111)   #ip y puerto de la raspberry
-sucesor = ("192.168.100.9", 1234)  #ip y puerto del robot sucesor (prubea con servidor)
+local = ("192.168.100.18", 1111)    #ip y puerto de la raspberry
+sucesor = ("192.168.100.9", 1234)   #ip y puerto del robot sucesor (prubea con servidor)
 bufferSize = 1024
 socket_udp = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 data = bytearray()
@@ -109,23 +109,22 @@ def udp_transm():   #Transmite informacion al robot sucesor
     if (gl.t_actual >= 0.1):    #0.1 segundo
         cadena = "V/" + gl.parar + "/" + str(gl.Input_vel) + "/" + str(gl.vel_ref) + "/" + str(gl.curvatura)
         msg = str.encode(cadena)
-        if(True):
+        if(gl.flag_debug_udp or gl.flag_debug):
             print("voy a enviar al sucesor la cadena :" + cadena)
-        #socket_udp = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
         socket_udp.sendto(msg, sucesor)
         gl.t_com_predecesor = time.time()
 
 def setup_udp():
     global socket_udp, local, data
-    if(True):
+    if(gl.flag_debug_udp or gl.flag_debug):
         print('abriendo servidor udp en {} port {}'.format(*local))
     socket_udp.bind(local)
     while True:
-        if(True):
+        if(gl.flag_debug_udp or gl.flag_debug):
             print('\nesperando a recibir mensajes')
         data, address = socket_udp.recvfrom(4096)
 
-        if(True):
+        if(gl.flag_debug_udp or gl.flag_debug):
             print('received {} bytes from {}'.format(len(data), address))
             print(data)
 
@@ -141,43 +140,48 @@ def udp_recep():    #recibe datos del predecesor
     if (len_data > 0):
         #paquete_entrante[len_data] = 0
         if(paquete_entrante[0] == "L"):
-            if(True):
-                print("recibi un L, monitor esta pidiendo datos")
+            if(gl.flag_debug_udp or gl.flag_debug):
+                print("recibi un L, monitor o sucesor esta pidiendo datos")
             lectura_estado(len_data)
+
         #elif (paquete_entrante[0]== "E"):   #queda deshabilitado porque se hace a traves de ubidots
-        #    if(gl.flag_debug):
-        #        print("recibi un E de escritura")
-        #    cadena = configuracion_remota(len_data)
-        #    msg = str.encode(cadena)
+
         elif(paquete_entrante[0] == "V"):
-            if(True):
-                print("recibi un V, envio de datos del predecesor")   
+            if(gl.flag_debug_udp or gl.flag_debug):
+                print("recibi un V, predecesor esta enviando datos")   
             estado_predecesor(len_data)
 
 def lectura_estado(len_data):
     global data, socket_udp, monitor
     mensaje = data.decode('UTF-8')
-    print("el mensaje es: " + mensaje)
+    if(gl.flag_debug_udp or gl.flag_debug):
+        print("funcion enviar informacion a sucesor")
     if (mensaje == "L/estado_predecesor"):
         cadena = "V/" + gl.parar + "/" + str(gl.Input_vel) + "/" + str(gl.vel_ref) + "/" + str(gl.curvatura_predecesor)
     else:
         cadena = "incorrecto"
     for i in range (3):
         msg = str.encode(cadena)
-        if(True):
-            print("voy a enviar al monitor la cadena: " + cadena)
+        if(gl.flag_debug_udp or gl.flag_debug):
+            print("voy a enviar al monitor (o sucesor) " + str.i + " veces la cadena: " + cadena)
         socket_udp.sendto(msg, monitor)
 
 
 def estado_predecesor(len_data):
     global data
     mensaje = data.decode('UTF-8')
-    print("funcion estado predecesor con mensaje: " + mensaje)
+    if(gl.flag_debug_udp or gl.flag_debug):
+        print("funcion obtener estado predecesor con mensaje: " + mensaje)
     valores = mensaje.split("/")
     if (len(valores) < 3):
-        print("datos insuficientes")
-    
-    print(mensaje.split("/"))
+        if(gl.flag_debug_udp or gl.flag_debug):
+            print("datos insuficientes")
+    else:
+        parar = valores[0]
+        vel = valores[1]
+        refvel = valores[2]
+        curvaprede = valores[3] 
+        #falta completar
 
 
 
