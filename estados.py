@@ -101,6 +101,8 @@ def ciclo_de_control():
 			print("ref: " + str(configuracion.d_ref))
 			print("error_ant: " + str(gl.error_ant_d[0]))
 			print("Output: " + str(gl.Output_d))
+			print("\n*****CURVATURA**")
+			print("recta: " + str(gl.recta) + " curvatura: " + str(gl.curvatura))
 			print("***")
 		
 		if(gl.flag_logger):

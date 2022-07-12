@@ -158,6 +158,9 @@ def obtenerPosicion (direccion):	#obtienela longitud de arco que existe entre la
 		return sum1/area #centroide, mientras mas cercano a 0 mas centrado en la linea
 
 def curvaturaPista():
+	global a_sl, a_sr, a_s, a_curvatura 
+	global b_sl, b_sr, b_s, b_curvatura 
+	global c_sl, c_sr, c_s, c_curvatura 
 	gl.t_actual = time.time() - gl.t_arco
 	if(gl.t_actual>=0.02):	#han transcurrido 20 ms
 		a_sl += v_l[0]*gl.t_actual

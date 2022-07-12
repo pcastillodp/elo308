@@ -2,7 +2,7 @@ import configuracion
 #   variables globales  #
 
 #flags para debug
-flag_debug = False      #activa los print
+flag_debug = True      #activa los print
 flag_logger = False     #activa que escriba el archivo logger
 flag_ubidots = False    #activa la suscripcion y publicacion en ubidots
 flag_calibrar = False   #activa la rutina de calibracion de los sensores IR
