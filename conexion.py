@@ -98,20 +98,44 @@ def publicar(variable, valor):
 #configuracion para UDP
 ip_monitoreo = "192.168.100.9" #ip servidor UDP
 puerto_monitoreo = 1234
+local = ("192.168.100.18", 1111)   #ip y puerto de la raspberry
 sucesor = ("192.168.100.9", 1234)  #ip y puerto del robot sucesor (prubea con servidor)
-puerto_local = 1111
 bufferSize = 1024
+socket_udp = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
 def udp_transm():   #Transmite informacion al robot sucesor
-    global sucesor
+    global socket_udp, sucesor
     gl.t_actual = time.time() - gl.t_com_predecesor
     if (gl.t_actual >= 0.1):    #0.1 segundo
         cadena = "V/" + gl.parar + "/" + str(gl.Input_vel) + "/" + str(gl.vel_ref) + "/" + str(gl.curvatura)
         msg = str.encode(cadena)
         if(gl.flag_debug):
             print("voy a enviar al sucesor la cadena :" + cadena)
-        UDPClientSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-        UDPClientSocket.sendto(msg, sucesor)
+        socket_udp = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+        socket_udp.sendto(msg, sucesor)
         gl.t_com_predecesor = time.time()
+
+def setup_udp():
+    global socket_udp, local
+    if(gl.flag_debug):
+        print('abriendo servidor udp en {} port {}'.format(*local))
+    socket_udp.bind(local)
+    while True:
+        if(gl.flag_debug):
+            print('\nesperando a recibir mensajes')
+        data, address = socket_udp.recvfrom(4096)
+
+        if(gl.flag_debug):
+            print('received {} bytes from {}'.format(len(data), address))
+            print(data)
+
+        if data:
+            sent = socket_udp.sendto(data, address)
+            if(gl.flag_debug):
+                print('sent {} bytes back to {}'.format(sent, address))
+
+#def udp_recep():    #recibe datos del predecesor 
+
+
 
 
