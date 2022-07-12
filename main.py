@@ -30,7 +30,9 @@ def main(args=None):
         t.start()
 
     if(gl.flag_udp):
-        conexion.setup_udp()
+        t_udp = threading.Thread(target =  conexion.setup_udp, args =() ) 
+        t_udp.setDaemon(True)
+        t_udp.start()
     
     sensores.configuracionSensorD()
     global estado, inicio, calibracion, controlLoop, calibrar, parar

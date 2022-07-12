@@ -129,10 +129,10 @@ def setup_udp():
             print('received {} bytes from {}'.format(len(data), address))
             print(data)
 
-        if data:
-            sent = socket_udp.sendto(data, address)
-            if(gl.flag_debug):
-                print('sent {} bytes back to {}'.format(sent, address))
+        #if data:
+        #    sent = socket_udp.sendto(data, address)
+        #    if(True):
+        #        print('sent {} bytes back to {}'.format(sent, address))
 
 #def udp_recep():    #recibe datos del predecesor 
 
