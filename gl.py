@@ -39,9 +39,10 @@ Ki_theta = 0 #0.135148736961827 #4500 #145.3619;//555.734047342947;//150;
 Kd_theta = 0 #0.7 #7.31377906381615 #60   #7.0616;//8.30454187876464;//1;
 
 #Variables controlador PID para la velocidad
-global Input_vel, Output_vel, sp_vel, vel_crucero, Kp_vel,Ki_vel, Kd_vel
-Input_vel = 0       #promedio de velocidades actuales R y L
-Output_vel= 0
+global Input_vel, Output_vel, vel_ref, sp_vel, vel_crucero, Kp_vel,Ki_vel, Kd_vel
+Input_vel = 0.0       #promedio de velocidades actuales R y L
+Output_vel= 0.0
+vel_ref = 0.0
 Kp_vel = 3 #5.75351825345478 #20.3 #100;//49.9757241214599;//130;
 Ki_vel = 1 #0.100712270288173 #145.3 #282.271150682254;//130;
 Kd_vel = 0 #0 #0.197722771627088;//0;

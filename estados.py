@@ -25,6 +25,7 @@ def ciclo_de_inicio():
 	#gl.d_ref = sensores.distancia()
 	#gl.sp_vel = 0.0
 	gl.Input_vel=0.0
+	gl.vel_ref=0.0
 	actuadores.motor(0,0)
 	configuracion.encoderD.write(0)   
 	configuracion.encoderL.write(0)
