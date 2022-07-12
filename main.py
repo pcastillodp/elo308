@@ -28,6 +28,9 @@ def main(args=None):
         t = threading.Thread(target = conexion.conectar_mqtt, args =() )    #hilo para levantar la conexion a Ubidots
         t.setDaemon(True)
         t.start()
+
+    if(gl.flag_udp):
+        conexion.setup_udp()
     
     sensores.configuracionSensorD()
     global estado, inicio, calibracion, controlLoop, calibrar, parar
