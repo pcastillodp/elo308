@@ -73,7 +73,8 @@ alphaD = 1.0
 varianzaD = 10
 
 #variables para detectar curva
-global recta, curvatura
+global recta, curvatura, curvatura_predecesor
 recta = 0.0
 curvatura = 0.0
+curvatura_predecesor = 0.0
 

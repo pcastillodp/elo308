@@ -96,12 +96,12 @@ def publicar(variable, valor):
 """
 
 #configuracion para UDP
-ip_monitoreo = "192.168.100.9" #ip servidor UDP
-puerto_monitoreo = 1234
+monitor = ("192.168.100.9", 1234)   #ip y puerto pc windows
 local = ("192.168.100.18", 1111)   #ip y puerto de la raspberry
 sucesor = ("192.168.100.9", 1234)  #ip y puerto del robot sucesor (prubea con servidor)
 bufferSize = 1024
 socket_udp = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+global data
 
 def udp_transm():   #Transmite informacion al robot sucesor
     global socket_udp, sucesor
@@ -111,12 +111,12 @@ def udp_transm():   #Transmite informacion al robot sucesor
         msg = str.encode(cadena)
         if(gl.flag_debug):
             print("voy a enviar al sucesor la cadena :" + cadena)
-        socket_udp = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+        #socket_udp = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
         socket_udp.sendto(msg, sucesor)
         gl.t_com_predecesor = time.time()
 
 def setup_udp():
-    global socket_udp, local
+    global socket_udp, local, data
     if(gl.flag_debug):
         print('abriendo servidor udp en {} port {}'.format(*local))
     socket_udp.bind(local)
@@ -134,7 +134,45 @@ def setup_udp():
         #    if(True):
         #        print('sent {} bytes back to {}'.format(sent, address))
 
-#def udp_recep():    #recibe datos del predecesor 
+def udp_recep():    #recibe datos del predecesor 
+    global data
+    paquete_entrante = data
+    len_data = len(data)
+    if (len_data > 0):
+        paquete_entrante[len_data] = 0
+    if(paquete_entrante[0] == "L"):
+        if(gl.flag_debug):
+            print("recibi un L, monitor esta pidiendo datos")
+        lectura_estado(len_data)
+    #elif (paquete_entrante[0]== "E"):   #queda deshabilitado porque se hace a traves de ubidots
+    #    if(gl.flag_debug):
+    #        print("recibi un E de escritura")
+    #    cadena = configuracion_remota(len_data)
+    #    msg = str.encode(cadena)
+    elif(paquete_entrante[0] == "V"):
+        if(gl.flag_debug):
+            print("recibi un V, envio de datos del predecesor")   
+        estado_predecesor(len_data)
+
+def lectura_estado(len_data):
+    global data, socket_udp, monitor
+    mensaje = data
+    if (mensaje == "/estado_predecesor"):
+        cadena = "V/" + gl.parar + "/" + str(gl.Input_vel) + "/" + str(gl.vel_ref) + "/" + str(gl.curvatura_predecesor)
+    else:
+        cadena = "incorrecto"
+    for i in range (3):
+        msg = str.encode(cadena)
+        if(gl.flag_debug):
+            print("voy a enviar al monitor la cadena :" + cadena)
+        socket_udp.sendto(msg, monitor)
+
+
+def estado_predecesor(len_data):
+    global data
+    mensaje = data
+    print("funcion estado predecesor")
+    print(mensaje)
 
 
 
