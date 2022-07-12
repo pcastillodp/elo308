@@ -30,6 +30,10 @@ def ciclo_de_inicio():
 	configuracion.encoderL.write(0)
 	sensores.obtenerPosicion(1)
 	gl.t_controlador=time.time()
+	if (gl.flag_udp):
+		conexion.udp_transm()
+		if(gl.flag_debug):
+			print("se intenta mandar informacion udp")
 
 def ciclo_de_calibracion():
 	if(gl.flag_calibrar):

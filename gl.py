@@ -5,6 +5,7 @@ import configuracion
 flag_debug = True      #activa los print
 flag_logger = False     #activa que escriba el archivo logger
 flag_ubidots = False    #activa la suscripcion y publicacion en ubidots
+flag_udp = True         #activa comunicacion upd
 flag_calibrar = False   #activa la rutina de calibracion de los sensores IR
 
 #define los estados de las variables de transicion para el motor de estados
@@ -22,12 +23,12 @@ global t_actual     #tiempo transcurrido desde la ultima actualizacion de veloci
 global t_svel       #ultima actualizacion de velocidades
 global t_controlador    #ultima actualizacion de controlador
 global t_arco       #ultima actualizacion de control por curvatura
+global t_com_predecesor #ultima actualizacion comunicacion predecesor
 t_actual = 0.0
 t_svel = 0.0
 t_controlador = 0.0
 t_arco = 0.0
-#t_arco = 0.0
-#global t_arco
+t_com_predecesor = 0.0
 
 #Variables controlador PID para la posicion sobre la linea
 global Input_theta, Output_theta, Kp_theta, Ki_theta, Kd_theta

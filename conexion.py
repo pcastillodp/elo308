@@ -1,11 +1,17 @@
 import threading
 import paho.mqtt.client as mqttClient
+import socket
 import json
 import time
 import gl
 
+
+
+"""
+    Implementacion de MQTT (Ubidots)
+"""
+#configuracion para ubidots
 global mqtt_client
- 
 connected = False
 BROKER_ENDPOINT = "industrial.api.ubidots.com"
 PORT = 1883
@@ -15,7 +21,6 @@ MQTT_PASSWORD = ''
 DEVICE_LABEL = "raspberry/"
 VARIABLE_LABEL = "prueba"
 TOPIC_SUSCRITO = "/v1.6/devices/controlador/+/lv"
-
 
 def on_connect(client, userdata, flags, rc):
     global connected
@@ -84,4 +89,29 @@ def publicar(variable, valor):
     mqtt_client.publish(topic, payload)
     if(gl.flag_debug):
         print("topico publicado: " + str(topic))
+
+
+"""
+    Implementacion de UDP
+"""
+
+#configuracion para UDP
+ip_monitoreo = "192.168.100.9" #ip servidor UDP
+puerto_monitoreo = 1234
+sucesor = ("192.168.100.9", 1234)  #ip y puerto del robot sucesor (prubea con servidor)
+puerto_local = 1111
+bufferSize = 1024
+
+def udp_transm():   #Transmite informacion al robot sucesor
+    global sucesor
+    gl.t_actual = time.time() - gl.t_com_predecesor
+    if (gl.t_actual >= 0.1):    #0.1 segundo
+        cadena = "V/" + gl.parar + "/" + str(gl.Input_vel) + "/" + str(gl.vel_ref) + "/" + str(gl.curvatura)
+        msg = str.encode(cadena)
+        if(gl.flag_debug):
+            print("voy a enviar al sucesor la cadena :" + cadena)
+        UDPClientSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+        UDPClientSocket.sendto(msg, sucesor)
+        gl.t_com_predecesor = time.time()
+
 
