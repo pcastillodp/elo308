@@ -43,6 +43,7 @@ def ciclo_de_calibracion():
 	gl.parar = "no"
 	
 def ciclo_de_control():
+	conexion.udp_recep()
 	gl.PID_vel="AUTO"
 	gl.PID_theta="AUTO"
 	gl.PID_d="AUTO"
