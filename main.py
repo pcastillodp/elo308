@@ -24,10 +24,10 @@ estado_siguiente = 0
 
 
 def main(args=None):
-    
-    t = threading.Thread(target = conexion.conectar_mqtt, args =() )    #hilo para levantar la conexion a Ubidots
-    t.setDaemon(True)
-    t.start()
+    if(gl.flag_ubidots):
+        t = threading.Thread(target = conexion.conectar_mqtt, args =() )    #hilo para levantar la conexion a Ubidots
+        t.setDaemon(True)
+        t.start()
     
     sensores.configuracionSensorD()
     global estado, inicio, calibracion, controlLoop, calibrar, parar
@@ -52,7 +52,8 @@ def main(args=None):
             estado_siguiente=controlLoop
         elif(estado==calibracion):
             estado_siguiente=inicio
-            print("pasando a inicio")
+            if(gl.flag_debug):
+                print("pasando a inicio")
         elif(estado==controlLoop and (gl.parar=="no")):
             estado_siguiente=controlLoop
         elif(estado==controlLoop and (gl.parar=="si")):
@@ -61,25 +62,5 @@ def main(args=None):
             estado_siguiente=inicio
         estado=estado_siguiente
     
-    #sensores.calibrarSensor()
-    
-    #for s in range (200):
-    #    print(sensores.distancia())
-    #    sleep(0.1)
-    
-    #sensores.velocidades()
-    
-    #print("adelante")
-    #actuadores.motor(30,30)
-    #sleep(1)
-    
-    #print("atras")
-    #actuadores.motor(-30,-30)
-    #sleep(1)
-        
-    #print("parar")
-    #actuadores.motor(0,0)
-    #sleep(.25)
-
 if __name__ == "__main__":
     main()

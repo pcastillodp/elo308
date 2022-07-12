@@ -32,7 +32,8 @@ def ciclo_de_inicio():
 	gl.t_controlador=time.time()
 
 def ciclo_de_calibracion():
-	#sensores.calibrarSensores ()
+	if(gl.flag_calibrar):
+		sensores.calibrarSensores ()
 	gl.calibrar = 0
 	gl.parar = "no"
 	
@@ -43,6 +44,7 @@ def ciclo_de_control():
 	
 	gl.Input_d = sensores.distancia()		#mide entrada de PID distancia
 	sensores.velocidades()					#calcula entrada de PID velocidad
+	sensores.curvaturaPista()				#revisa si está en una recta o curvatura
 
 	if (gl.Output_vel<0):		#calcula entrada de PID angulo linea			
 		gl.Input_theta=-1*sensores.obtenerPosicion(0)/configuracion.d2		#recorrido inverso
@@ -82,39 +84,40 @@ def ciclo_de_control():
 		gl.Output_theta=calculoPID(gl.Input_theta, configuracion.theta_ref, gl.error_ant_theta, gl.integral_theta, gl.Kp_theta, gl.Ki_theta, gl.Kd_theta, configuracion.sat_theta, gl.PID_theta, gl.Output_theta, "DIRECTO")
 		gl.t_controlador=time.time()
 	
-	#if (gl.t_actual >= 0.05):							#se activa cada 0.5s
-		#print("\n*****VELOCIDAD	**")
-		#print("Input: " + str(gl.Input_vel))
-		#print("ref: " + str(configuracion.vel_ref))
-		#print("error_ant: " + str(gl.error_ant_vel[0]))
-		#print("Output: " + str(gl.Output_vel))
-		#print("\n******THETA	**")
-		#print("Input: " + str(gl.Input_theta))
-		#print("ref: " + str(configuracion.theta_ref))
-		#print("error_ant: " + str(gl.error_ant_theta[0]))
-		#print("Output: " + str(gl.Output_theta))
-		#print("\n*****DISTANCIA	**")
-		#print("Input: " + str(gl.Input_d))
-		#print("ref: " + str(configuracion.d_ref))
-		#print("error_ant: " + str(gl.error_ant_d[0]))
-		#print("Output: " + str(gl.Output_d))
-		#print("***")
+	if (gl.t_actual >= 0.05):							#se activa cada 0.5s
+		if (gl.flag_debug):
+			print("\n*****VELOCIDAD	**")
+			print("Input: " + str(gl.Input_vel))
+			print("ref: " + str(configuracion.vel_ref))
+			print("error_ant: " + str(gl.error_ant_vel[0]))
+			print("Output: " + str(gl.Output_vel))
+			print("\n******THETA	**")
+			print("Input: " + str(gl.Input_theta))
+			print("ref: " + str(configuracion.theta_ref))
+			print("error_ant: " + str(gl.error_ant_theta[0]))
+			print("Output: " + str(gl.Output_theta))
+			print("\n*****DISTANCIA	**")
+			print("Input: " + str(gl.Input_d))
+			print("ref: " + str(configuracion.d_ref))
+			print("error_ant: " + str(gl.error_ant_d[0]))
+			print("Output: " + str(gl.Output_d))
+			print("***")
 		
-		#logging.info("velocidad: " + str(gl.Input_vel))
-		#logging.info("theta: " + str(gl.Input_theta))
-		#logging.info("distancia: " + str(gl.Input_d))
-	
-		#t2 = threading.Thread(target = conexion.publicar, args =("velocidad", gl.Input_vel) )
-		#t2.setDaemon(True)
-		#t2.start()
-		
-		#t3 = threading.Thread(target = conexion.publicar, args =("theta", gl.Input_theta) )
-		#t3.setDaemon(True)
-		#t3.start()
-		
-		#t4 = threading.Thread(target = conexion.publicar, args =("distancia", gl.Input_d) )
-		#t4.setDaemon(True)
-		#t4.start()
+		if(gl.flag_logger):
+			logging.info("velocidad: " + str(gl.Input_vel))
+			logging.info("theta: " + str(gl.Input_theta))
+			logging.info("distancia: " + str(gl.Input_d))
+
+		if(gl.flag_ubidots):
+			t2 = threading.Thread(target = conexion.publicar, args =("velocidad", gl.Input_vel) )
+			t2.setDaemon(True)
+			t2.start()
+			t3 = threading.Thread(target = conexion.publicar, args =("theta", gl.Input_theta) )
+			t3.setDaemon(True)
+			t3.start()
+			t4 = threading.Thread(target = conexion.publicar, args =("distancia", gl.Input_d) )
+			t4.setDaemon(True)
+			t4.start()
 	
 	actuadores.motor(gl.Output_vel - gl.Output_theta - gl.Output_d, gl.Output_vel + gl.Output_theta + gl.Output_d)
 	
@@ -134,7 +137,8 @@ def calculoPID (y, ref, error_ant, error_integral, kp, ki, kd, limite, MODO, out
 		elif(ki*error_integral[0] < -limite):
 			error_integral[0] = -limite /ki
 		u=kp*error + error_integral[0]*ki + kd*(error-error_ant[0] )/(gl.t_actual)
-		#print("u: " + str(u))
+		if (gl.flag_debug):
+			print("u: " + str(u))
 		error_ant[0] = error
 
 		if(u>limite):

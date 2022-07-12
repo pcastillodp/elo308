@@ -20,27 +20,30 @@ TOPIC_SUSCRITO = "/v1.6/devices/controlador/+/lv"
 def on_connect(client, userdata, flags, rc):
     global connected
     if rc == 0:
-        print("Connected success")
-        print("Suscrito a: " + TOPIC_SUSCRITO)
+        if(gl.flag_debug):
+            print("Connected success")
+            print("Suscrito a: " + TOPIC_SUSCRITO)
         connected = True
         client.subscribe(TOPIC_SUSCRITO)
     else:
-        print(f"Connected fail with code {rc}")
+        if(gl.flag_debug):
+            print(f"Connected fail with code {rc}")
         
 def on_publish(client, userdata, result):
-    print("Published!")
+    if(gl.flag_debug):
+        print("Published!")
   
 # The callback for when a message is received from the server.
 def on_message(client, userdata, msg):
     global distancia_kp, distancia_ki, distancia_kd
     global theta_kp, theta_ki, theta_kd
     global velocidad_kp, velocidad_ki, velocidad_kd
-    print("sisub: msg received with topic: {} and payload: {}".format(msg.topic, str(msg.payload)))
+    if(gl.flag_debug):
+        print("sisub: msg received with topic: {} and payload: {}".format(msg.topic, str(msg.payload)))
     variable = msg.topic.split('/')[4]  
     valor = msg.payload.decode("utf-8") 
     if (variable == "distancia_kp"):
         gl.Kp_distancia = valor
-        print("hola")
     
 def connect(mqtt_client, mqtt_username, mqtt_password, broker_endpoint, port):
     global connected
@@ -56,13 +59,15 @@ def connect(mqtt_client, mqtt_username, mqtt_password, broker_endpoint, port):
         attempts = 0
 
         while not connected and attempts < 5:  # Wait for connection
-            print(connected)
-            print("Attempting to connect...")
+            if(gl.flag_debug):
+                print(connected)
+                print("Attempting to connect...")
             time.sleep(1)
             attempts += 1
 
     if not connected:
-        print("[ERROR] Could not connect to broker")
+        if(gl.flag_debug):
+            print("[ERROR] Could not connect to broker")
         return False
 
     return True
@@ -77,5 +82,6 @@ def publicar(variable, valor):
     payload = json.dumps({"value": valor})
     topic = "{}{}{}".format(TOPIC, DEVICE_LABEL, variable)
     mqtt_client.publish(topic, payload)
-    print("topico publicado: " + str(topic))
+    if(gl.flag_debug):
+        print("topico publicado: " + str(topic))
 

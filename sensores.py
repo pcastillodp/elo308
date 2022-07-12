@@ -18,17 +18,32 @@ v_r = [0.0]*5
 v_l = [0.0]*5
 s_r = [0.0]*5
 s_l = [0.0]*5
+a_s = 0.0
+b_s = 0.0
+c_s = 0.0
+a_sl = 0.0
+a_sr = 0.0
+b_sl = 0.0
+b_sr = 0.0
+c_sl = 0.0
+c_sr = 0.0
+a_curvatura = 0.0
+b_curvatura = 0.0
+c_curvatura = 0.0
 
 def calibrarSensores():		#calibrar sensores IR
-	print("calibrando")
+	if(gl.flag_debug):
+		print("calibrando")
 	vcal = 50 #velocidad del motor para la calibracion
 	gl.maximo = [0]*16 
 	gl.minimo = [32000]*16
 	
-	print("Obteniendo maximos y minimos..")
+	if(gl.flag_debug):
+		print("Obteniendo maximos y minimos..")
 	while(abs(configuracion.radioRueda*pi*(configuracion.encoderD.read()- configuracion.encoderL.read())*configuracion.N/(configuracion.CPR*configuracion.l))<4*pi):
 		actuadores.motor(-vcal,vcal)
-		print(abs(configuracion.radioRueda*pi*(configuracion.encoderD.read()- configuracion.encoderL.read())*configuracion.N/(configuracion.CPR*configuracion.l)))
+		if(gl.flag_debug):
+			print(abs(configuracion.radioRueda*pi*(configuracion.encoderD.read()- configuracion.encoderL.read())*configuracion.N/(configuracion.CPR*configuracion.l)))
 
 		for s in range(16):
 			GPIO.output(configuracion.S0, s&0x01) # 0001
@@ -39,8 +54,9 @@ def calibrarSensores():		#calibrar sensores IR
 			gl.maximo[s] = valor if (valor > gl.maximo[s]) else (gl.maximo[s])
 			gl.minimo[s] = valor if (valor < gl.minimo[s]) else (gl.minimo[s])
 			time.sleep(0.001)
-			
-	print("listo, ahora voy a volver a la linea")
+
+	if(gl.flag_debug):	
+		print("listo, ahora voy a volver a la linea")
 	GPIO.output(configuracion.S0, 4&0x01) # para volver al centro de la linea
 	GPIO.output(configuracion.S1, 4&0x02) 
 	GPIO.output(configuracion.S2, 4&0x04) 
@@ -140,4 +156,69 @@ def obtenerPosicion (direccion):	#obtienela longitud de arco que existe entre la
 	else:
 		gl.parar = "no"
 		return sum1/area #centroide, mientras mas cercano a 0 mas centrado en la linea
+
+def curvaturaPista():
+	gl.t_actual = time.time() - gl.t_arco
+	if(gl.t_actual>=0.02):	#han transcurrido 20 ms
+		a_sl += v_l[0]*gl.t_actual
+		a_sr += v_r[0]*gl.t_actual
+		b_sl += v_l[0]*gl.t_actual
+		b_sr += v_r[0]*gl.t_actual
+		c_sl += v_l[0]*gl.t_actual
+		c_sr += v_r[0]*gl.t_actual
+		gl.t_arco = time.time()
+	a_s = (a_sr+a_sl)*0.5
+	b_s = (b_sr+b_sl)*0.5
+	c_s = (c_sr+c_sl)*0.5
+	if(gl.Input_vel<0.1):
+		a_curvatura = 0
+		b_curvatura = 0
+		c_curvatura = 0
+		a_sl = 0
+		a_sr = 0
+		b_sl = 0
+		b_sr = 0
+		c_sl = 0
+		c_sr = 0
+	elif (a_s >= 3 and b_s>=10):
+		b_curvatura = abs(((b_sr-b_sl)*0.5)/(configuracion.l*b_s))
+		b_sl = 0
+		b_sr = 0
+	elif (a_s>=3 and a_s == b_s):
+		b_sl=0
+		b_sr=0
+	elif (a_s>=6 and c_s>=10):
+		c_curvatura = abs(((c_sr-c_sl)*0.5)/(configuracion.l*c_s))
+		c_sl = 0
+		c_sr = 0
+	elif (a_s>=6 and a_s == c_s):
+		c_sl=0
+		c_sr=0
+	elif (a_s>=10):
+		a_curvatura = abs(((a_sr-a_sl)*0.5)/(configuracion.l*a_s))
+		a_sl = 0
+		a_sr = 0
+	if(a_curvatura<0.01 and b_curvatura<0.01 and c_curvatura<0.01):
+		gl.recta=1
+	elif(a_curvatura>0.02 and b_curvatura>0.02 and c_curvatura>0.02):
+		gl.recta=0
+	if (gl.recta==1):
+		if(a_curvatura>= b_curvatura and a_curvatura>= c_curvatura):
+			gl.curvatura= a_curvatura
+		elif(b_curvatura>= a_curvatura and b_curvatura>= c_curvatura):
+			gl.curvatura= b_curvatura
+		elif(c_curvatura>= a_curvatura and c_curvatura>= b_curvatura):
+			gl.curvatura= c_curvatura
+		else:
+			gl.curvatura= a_curvatura
+	else:
+		if(a_curvatura< b_curvatura and a_curvatura< c_curvatura):
+			gl.curvatura= a_curvatura
+		elif(b_curvatura< a_curvatura and b_curvatura< c_curvatura):
+			gl.curvatura= b_curvatura
+		elif(c_curvatura< a_curvatura and c_curvatura< b_curvatura):
+			gl.curvatura= c_curvatura
+		else:
+			gl.curvatura= a_curvatura
+
 

@@ -1,6 +1,12 @@
 import configuracion
 #   variables globales  #
 
+#flags para debug
+flag_debug = False      #activa los print
+flag_logger = False     #activa que escriba el archivo logger
+flag_ubidots = False    #activa la suscripcion y publicacion en ubidots
+flag_calibrar = False   #activa la rutina de calibracion de los sensores IR
+
 #define los estados de las variables de transicion para el motor de estados
 global parar, calibrar  
 parar="si"
@@ -15,9 +21,11 @@ minimo = [32000]*16
 global t_actual     #tiempo transcurrido desde la ultima actualizacion de velocidades
 global t_svel       #ultima actualizacion de velocidades
 global t_controlador    #ultima actualizacion de controlador
+global t_arco       #ultima actualizacion de control por curvatura
 t_actual = 0.0
 t_svel = 0.0
 t_controlador = 0.0
+t_arco = 0.0
 #t_arco = 0.0
 #global t_arco
 
@@ -61,3 +69,9 @@ Kd_d = 0 #0.1;//1.0077
 distFiltro = configuracion.d_ref
 alphaD = 1.0
 varianzaD = 10
+
+#variables para detectar curva
+global recta, curvatura
+recta = 0.0
+curvatura = 0.0
+
