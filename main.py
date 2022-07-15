@@ -17,7 +17,7 @@ logging.basicConfig(filename="log.txt", level=logging.INFO,
 
 
 #maquina de estados
-inimakecio = 0
+inicio = 0
 calibracion = 1
 controlLoop = 2
 estado = 0
