@@ -1,3 +1,4 @@
+# coding=utf-8
 from cmath import pi
 import configuracion
 import actuadores
@@ -11,7 +12,7 @@ import VL53L0X
 import time
 
 i2c = smbus.SMBus(configuracion.channel)
-adc = Adafruit_ADS1x15.ADS1115()
+adc = Adafruit_ADS1x15.ADS1115(busnum = 1)
 tof = VL53L0X.VL53L0X(i2c_bus=1,i2c_address=0x29)
 
 v_r = [0.0]*5

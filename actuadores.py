@@ -1,3 +1,4 @@
+# coding=utf-8
 #  Función de motor  
 from time import sleep
 import RPi.GPIO as GPIO

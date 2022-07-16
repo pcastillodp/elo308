@@ -1,3 +1,4 @@
+# coding=utf-8
 import threading
 import paho.mqtt.client as mqttClient
 import socket

@@ -1,3 +1,4 @@
+# coding=utf-8
 #   presenta todas las configuraciones estables de pines    #
 import RPi.GPIO as GPIO
 import Encoder
