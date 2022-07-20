@@ -1,0 +1,38 @@
+sudo apt update
+sudo apt upgrade
+sudo reboot
+
+github
+sudo apt install -y git
+git config --global user.name "pcastillodp"
+git config --global user.email "polet.castillo.14@sansano.usm.cl"
+mkdir github
+cd github
+git clone https://github.com/pcastillodp/elo308.git
+pcastillodp
+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
+
+python
+sudo apt install -y build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev
+sudo apt install python
+sudo apt install python-pip-whl
+sudo apt install python3
+sudo apt install python3-pip
+sudo python3 -m pip install --upgrade pip
+sudo reboot
+*en geany>construir>establecer comandos de contruccion; cambiar python por python3
+pip install RPI.GPIO
+pip install Encoder
+**se debe modificar esta libreria
+cd /home/pi/.local/lib/python3.9/site-packages/Encoder
+nano encoder.py
+* cambiar GPIO.setmode(GPIO.BCM) por GPIO.setmode(GPIO.BOARD)
+* agregar: 
+	def write(self,num):
+ 	       self.pos = num
+*ctrl + O; ctrl + X
+pip install smbus2
+pip install Adafruit-ADS1x15
+pip install git+https://github.com/pimoroni/VL53L0X-python.git
+pip install paho-mqtt
+
