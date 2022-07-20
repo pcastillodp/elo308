@@ -23,9 +23,10 @@ socket_udp = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 data = bytearray()
 
 monitor = ("192.168.100.9", 1234)   #ip y puerto pc windows
-lider = ("192.168.100.20", 1111)    #ip y puerto de la raspberry
-seguidor1 = ("192.168.100.22", 1111)   #ip y puerto del robot sucesor 
-seguidor2 = ("192.168.100.23", 1111)   #ip y puerto del robot sucesor 
+lider = ("192.168.100.18", 1111)    #ip y puerto de la raspberry
+seguidor1 = ("192.168.100.20", 1111)   #ip y puerto del robot sucesor 
+seguidor2 = ("192.168.100.22", 1111)   #ip y puerto del robot sucesor 
+seguidor3 = ("192.168.100.23", 1111)  
 
 
 def main(args=None):
@@ -34,9 +35,10 @@ def main(args=None):
     ip_local = os.popen('hostname -I').read().strip()
 
     if (ip_local == "192.168.100.9"): flag_robot = "M"
-    elif(ip_local == "192.168.100.20"): flag_robot = "L"
-    elif(ip_local == "192.168.100.22"): flag_robot = "S1"
-    elif(ip_local == "192.168.100.23"): flag_robot = "S2"
+    elif(ip_local == "192.168.100.18"): flag_robot = "L"
+    elif(ip_local == "192.168.100.20"): flag_robot = "S1"
+    elif(ip_local == "192.168.100.22"): flag_robot = "S2"
+    elif(ip_local == "192.168.100.23"): flag_robot = "S3"
     else: flag_robot = "L"
 
     if(flag_robot=="M"):
@@ -44,15 +46,38 @@ def main(args=None):
         print("escribe L/ para solicitarle datos al lider")
         mensaje = input("escribe el mensaje a enviar: ")
         if (mensaje == "L/"):
+            print("enviando mensaje L")
             solicitar(lider)
-            t_udp = threading.Thread(target = recibir, args =(lider,) ) 
+            print("abriendo puerto de escucha a lider")
+            t_udp = threading.Thread(target = recibir, args =(monitor,) ) 
             t_udp.setDaemon(True)
             t_udp.start()
 
     elif(flag_robot == "L"):
         print("soy el lider")
-        print("estare atento al monitor por si solicitan datos")
+        print("estare atento por si solicitan datos")
         t_udp = threading.Thread(target=recibir, args = (lider,)) 
+        t_udp.setDaemon(True)
+        t_udp.start()
+        
+    elif(flag_robot=="S1"):
+        print("soy el seguidor1")
+        print("estare atento por si me llegan datos")
+        t_udp = threading.Thread(target=recibir, args = (seguidor1,)) 
+        t_udp.setDaemon(True)
+        t_udp.start()
+    
+    elif(flag_robot=="S2"):
+        print("soy el seguidor2")
+        print("estare atento por si me llegan datos")
+        t_udp = threading.Thread(target=recibir, args = (seguidor2,)) 
+        t_udp.setDaemon(True)
+        t_udp.start()
+    
+    elif(flag_robot=="S3"):
+        print("soy el seguidor3")
+        print("estare atento por si me llegan datos")
+        t_udp = threading.Thread(target=recibir, args = (seguidor3,)) 
         t_udp.setDaemon(True)
         t_udp.start()
         
@@ -64,7 +89,7 @@ def main(args=None):
 
 
 def enviar (sujeto):
-    print("enviar")
+    print("funcion enviar")
     global socket_udp
     parar = "si"
     Input_vel = random.randint(0,22)
@@ -87,7 +112,7 @@ def solicitar(sujeto):
 
 
 def recibir(sujeto):
-    global socket_udp, data
+    global socket_udp, data, flag_robot, monitor, lider, seguidor1, seguidor2
     print("funcion recibir")
     print('abriendo servidor udp en {} port {}'.format(*sujeto))
     socket_udp.bind(sujeto)
@@ -99,8 +124,24 @@ def recibir(sujeto):
         len_data = len(data)
         if (len_data > 0):
             if(paquete_entrante[0] == "L"):
-                print("recibi un L, monitor o sucesor esta pidiendo datos")
-                #agregar aqui lo que debe hacer
+                print("recibi un L, estan pidiendo datos")
+                if (flag_robot == "L"):
+                    print("enviando datos al monitor")
+                    enviar(monitor)
+                    print("enviando datos al seguidor1")
+                    enviar(seguidor1)
+            else:
+                if(flag_robot== "M"):
+                    print("recibi datos del lider")
+                elif(flag_robot == "S1"):
+                    print("recibi datos del lider, voy a enviar los mios a S2")
+                    enviar(seguidor2)
+                elif(flag_robot == "S2"):
+                    print("recibi datos del S1, voy a enviar los mios a S3")
+                    enviar(seguidor3)
+                elif(flag_robot=="S3"):
+                    print("recibi datos del S2")
+                
 
         
         
