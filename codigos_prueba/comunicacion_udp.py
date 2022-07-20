@@ -3,6 +3,7 @@ import random
 import time
 import socket
 import threading
+import os
 
 """
     Logica de comunicacion simulada:
@@ -18,7 +19,7 @@ flag_robot = "S1" #M:monitor ; L:lider ; S1:seguidor 1 ; S2:seguidor 2
 #UDP
 bufferSize = 1024
 socket_udp = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-socket_udp.connect(("8.8.8.8", 80))
+#socket_udp.connect(("8.8.8.8", 80))
 data = bytearray()
 
 monitor = ("192.168.100.9", 1234)   #ip y puerto pc windows
@@ -26,16 +27,17 @@ lider = ("192.168.100.20", 1111)    #ip y puerto de la raspberry
 seguidor1 = ("192.168.100.22", 1111)   #ip y puerto del robot sucesor 
 seguidor2 = ("192.168.100.23", 1111)   #ip y puerto del robot sucesor 
 
+
 def main(args=None):
     global socket_udp, lider
     
-    ip_local= socket_udp.getsockname()[0]
+    ip_local = os.popen('hostname -I').read().strip()
+
     if (ip_local == "192.168.100.9"): flag_robot = "M"
     elif(ip_local == "192.168.100.20"): flag_robot = "L"
     elif(ip_local == "192.168.100.22"): flag_robot = "S1"
     elif(ip_local == "192.168.100.23"): flag_robot = "S2"
-
-    print(socket_udp.getsockname()[0])
+    else: flag_robot = "L"
 
     if(flag_robot=="M"):
         print("soy el monitor")
@@ -43,16 +45,21 @@ def main(args=None):
         mensaje = input("escribe el mensaje a enviar: ")
         if (mensaje == "L/"):
             solicitar(lider)
-            t_udp = threading.Thread(target =  self.recibir, args =(lider) ) 
+            t_udp = threading.Thread(target = recibir, args =(lider,) ) 
             t_udp.setDaemon(True)
             t_udp.start()
 
     elif(flag_robot == "L"):
         print("soy el lider")
         print("estare atento al monitor por si solicitan datos")
-        t_udp = threading.Thread(target=recibir,args =(lider)) 
+        t_udp = threading.Thread(target=recibir, args = (lider,)) 
         t_udp.setDaemon(True)
         t_udp.start()
+        
+        
+    while(True):
+        time.sleep(1000)
+        
 
 
 
@@ -80,16 +87,25 @@ def solicitar(sujeto):
 
 
 def recibir(sujeto):
-    print("recibir")
-    global socket_udp
+    global socket_udp, data
+    print("funcion recibir")
     print('abriendo servidor udp en {} port {}'.format(*sujeto))
     socket_udp.bind(sujeto)
     while True:
         print('\nesperando a recibir mensajes')
         data, address = socket_udp.recvfrom(4096)
-
         print('received {} bytes from {}'.format(len(data), address))
-        print(data)
+        paquete_entrante = data.decode('UTF-8')
+        len_data = len(data)
+        if (len_data > 0):
+            if(paquete_entrante[0] == "L"):
+                print("recibi un L, monitor o sucesor esta pidiendo datos")
+                #agregar aqui lo que debe hacer
+
+        
+        
+
+            
 
 if __name__ == "__main__": 
   main()
