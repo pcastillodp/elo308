@@ -92,7 +92,7 @@ def enviar (sujeto):
 
     cadena = "V/" + parar + "/" + str(Input_vel) + "/" + str(vel_ref) + "/" + str(curvatura)
     msg = str.encode(cadena)
-    print("voy a enviar la cadena: " + cadena + "al robot" + sujeto)
+    print("voy a enviar la cadena: " + cadena + " al robot " + str(sujeto))
     socket_udp.sendto(msg, sujeto)
 
     
@@ -101,7 +101,7 @@ def solicitar(sujeto):
     global socket_udp
     cadena = "L/"
     msg = str.encode(cadena)
-    print("estoy solicitando datos con la cadena: " + cadena + " al robot "  .format(*sujeto))
+    print("estoy solicitando datos con la cadena: " + cadena + " al robot " + str(sujeto))
     socket_udp.sendto(msg, sujeto)
 
 
