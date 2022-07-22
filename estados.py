@@ -82,6 +82,9 @@ def ciclo_de_control():
 	#	gl.integral_vel=0
 	#	gl.error_ant_theta=0
 	#	gl.integral_theta=0
+	
+	if (gl.flag_udp):
+		conexion.udp_transm()
 
 	gl.t_actual = time.time() - gl.t_controlador
 	if (gl.t_actual >= 0.04):							#se activa cada 40 ms
@@ -90,6 +93,9 @@ def ciclo_de_control():
 		gl.Output_vel=calculoPID(gl.Input_vel, configuracion.vel_ref, gl.error_ant_vel, gl.integral_vel, gl.Kp_vel, gl.Ki_vel, gl.Kd_vel, configuracion.sat_vel, gl.PID_vel, gl.Output_vel, "DIRECTO")
 		gl.Output_theta=calculoPID(gl.Input_theta, configuracion.theta_ref, gl.error_ant_theta, gl.integral_theta, gl.Kp_theta, gl.Ki_theta, gl.Kd_theta, configuracion.sat_theta, gl.PID_theta, gl.Output_theta, "DIRECTO")
 		gl.t_controlador=time.time()
+
+		if(gl.flag_udp):
+			conexion.udp_monitor()
 	
 	if (gl.t_actual >= 0.05):							#se activa cada 0.5s
 		if (gl.flag_debug):
