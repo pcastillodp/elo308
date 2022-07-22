@@ -46,15 +46,6 @@ void setup() {
 
   // check for the presence of the shield:
 
-  if (WiFi.status() == WL_NO_SHIELD) {
-
-    Serial.println("WiFi shield not present");
-
-    // don't continue:
-
-    while (true);
-
-  }
 
 
 
@@ -127,7 +118,7 @@ void loop() {
 
     Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
 
-    Udp.write(ReplyBuffer);
+    Udp.printf(ReplyBuffer);
 
     Udp.endPacket();
 
