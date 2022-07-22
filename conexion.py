@@ -110,7 +110,7 @@ def udp_transm():   #Transmite informacion al robot sucesor
         elif (gl.flag_robot == "S2"): sucesor = gl.seguidor3
         else: sucesor = gl.seguidor1
         if(gl.flag_debug_udp or gl.flag_debug):
-            print("voy a enviar al sucesor" + sucesor + " la cadena : " + cadena)
+            print("voy a enviar al sucesor" + str(sucesor) + " la cadena : " + cadena)
         socket_udp.sendto(msg, sucesor)
         gl.t_com_predecesor = time.time()
 

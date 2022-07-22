@@ -61,6 +61,7 @@ global Input_vel, Output_vel, vel_ref, sp_vel, vel_crucero, Kp_vel,Ki_vel, Kd_ve
 Input_vel = 0.0       #promedio de velocidades actuales R y L
 Output_vel= 0.0
 vel_ref = 0.0
+vel_crucero = 0.0
 Kp_vel = 3 #5.75351825345478 #20.3 #100;//49.9757241214599;//130;
 Ki_vel = 1 #0.100712270288173 #145.3 #282.271150682254;//130;
 Kd_vel = 0 #0 #0.197722771627088;//0;
@@ -81,6 +82,7 @@ global Input_d, Output_d, d_ref, error_d, alpha_fuzzy, delta, Kp_d, Ki_d, Kd_d, 
 Input_d = 0         #entrada del PID de distancia, es la distancia que existe hacia delante
 Output_d = 0
 error_d = 0
+d_ref= 0
 #alpha_fuzzy=1
 #delta = 0.1
 Kp_d = 0 #100 #1.5;//8.0013
