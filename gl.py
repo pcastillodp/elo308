@@ -2,6 +2,10 @@
 import configuracion
 #   variables globales  #
 
+#FALTA IMPLEMENTAR#
+global control
+control = 0.0
+
 #flags para debug
 flag_debug = False      #activa los print
 flag_debug_udp = True
@@ -9,6 +13,18 @@ flag_logger = False     #activa que escriba el archivo logger
 flag_ubidots = False    #activa la suscripcion y publicacion en ubidots
 flag_udp = True         #activa comunicacion upd
 flag_calibrar = False   #activa la rutina de calibracion de los sensores IR
+flag_peloton = True     #activa la funcionalidad multiagente
+flag_robot = "L"        #Lider por defecto
+
+#para comunicacion UDP
+global monitor, lider, seguidor1, seguidor2, seguidor3, bufferSize, data
+monitor = ("192.168.100.9", 1234)   #ip y puerto pc windows
+lider = ("192.168.100.18", 1111)    #ip y puerto de la raspberry
+seguidor1 = ("192.168.100.20", 1111)   #ip y puerto del robot sucesor 
+seguidor2 = ("192.168.100.22", 1111)   #ip y puerto del robot sucesor 
+seguidor3 = ("192.168.100.23", 1111)  
+bufferSize = 1024
+data = bytearray()
 
 #define los estados de las variables de transicion para el motor de estados
 global parar, calibrar  

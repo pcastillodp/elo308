@@ -9,6 +9,7 @@ import gl
 import conexion
 import logging	#para crear el archivo que almacena los datos 
 import threading    #hilos
+import os
 
 global mqtt_client
 
@@ -31,7 +32,18 @@ def main(args=None):
         t.start()
 
     if(gl.flag_udp):
-        t_udp = threading.Thread(target =  conexion.setup_udp, args =() ) 
+        ip_local = os.popen('hostname -I').read().strip()
+
+        if(ip_local == "192.168.100.18"): gl.flag_robot = "L"
+        elif(ip_local == "192.168.100.20"): gl.flag_robot = "S1"
+        elif(ip_local == "192.168.100.22"): gl.flag_robot = "S2"
+        elif(ip_local == "192.168.100.23"): gl.flag_robot = "S3"
+        else: gl.flag_robot = "L"
+
+        if(gl.flag_debug or gl.flag_debug_udp):
+            print("soy el agente : " + gl.flag_robot)
+
+        t_udp = threading.Thread(target =  conexion.setup_udp, args =() )   #abre servidor UDP para recibir mensajes
         t_udp.setDaemon(True)
         t_udp.start()
     

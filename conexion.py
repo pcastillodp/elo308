@@ -96,30 +96,36 @@ def publicar(variable, valor):
     Implementacion de UDP
 """
 
-#configuracion para UDP
-monitor = ("192.168.100.9", 1234)   #ip y puerto pc windows
-local = ("192.168.100.18", 1111)    #ip y puerto de la raspberry
-sucesor = ("192.168.100.9", 1234)   #ip y puerto del robot sucesor (prubea con servidor)
-bufferSize = 1024
 socket_udp = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-data = bytearray()
+
 
 def udp_transm():   #Transmite informacion al robot sucesor
-    global socket_udp, sucesor
+    global socket_udp
     gl.t_actual = time.time() - gl.t_com_predecesor
     if (gl.t_actual >= 0.1):    #0.1 segundo
         cadena = "V/" + gl.parar + "/" + str(gl.Input_vel) + "/" + str(gl.vel_ref) + "/" + str(gl.curvatura)
         msg = str.encode(cadena)
+        if(gl.flag_robot == "L"): sucesor = gl.seguidor1
+        elif (gl.flag_robot == "S1"): sucesor = gl.seguidor2
+        elif (gl.flag_robot == "S2"): sucesor = gl.seguidor3
+        else: sucesor = gl.seguidor1
         if(gl.flag_debug_udp or gl.flag_debug):
-            print("voy a enviar al sucesor la cadena :" + cadena)
+            print("voy a enviar al sucesor" + sucesor + " la cadena : " + cadena)
         socket_udp.sendto(msg, sucesor)
         gl.t_com_predecesor = time.time()
 
 def setup_udp():
-    global socket_udp, local, data
+    global socket_udp, data
+    if(gl.flag_robot == "L"): local = gl.lider
+    elif (gl.flag_robot == "S1"): local = gl.seguidor1
+    elif (gl.flag_robot == "S2"): local = gl.seguidor2
+    elif (gl.flag_robot == "S3"): local = gl.seguidor3
+    else: local = gl.lider
+
     if(gl.flag_debug_udp or gl.flag_debug):
         print('abriendo servidor udp en {} port {}'.format(*local))
     socket_udp.bind(local)
+
     while True:
         if(gl.flag_debug_udp or gl.flag_debug):
             print('\nesperando a recibir mensajes')
@@ -129,60 +135,63 @@ def setup_udp():
             print('received {} bytes from {}'.format(len(data), address))
             print(data)
 
-        #if data:
-        #    sent = socket_udp.sendto(data, address)
-        #    if(True):
-        #        print('sent {} bytes back to {}'.format(sent, address))
-
-def udp_recep():    #recibe datos del predecesor 
-    global data
-    paquete_entrante = data.decode('UTF-8')
-    len_data = len(data)
-    if (len_data > 0):
-        #paquete_entrante[len_data] = 0
-        if(paquete_entrante[0] == "L"):
-            if(gl.flag_debug_udp or gl.flag_debug):
-                print("recibi un L, monitor o sucesor esta pidiendo datos")
-            lectura_estado(len_data)
-
-        #elif (paquete_entrante[0]== "E"):   #queda deshabilitado porque se hace a traves de ubidots
-
-        elif(paquete_entrante[0] == "V"):
-            if(gl.flag_debug_udp or gl.flag_debug):
-                print("recibi un V, predecesor esta enviando datos")   
-            estado_predecesor(len_data)
-
-def lectura_estado(len_data):
-    global data, socket_udp, monitor
-    mensaje = data.decode('UTF-8')
+def udp_monitor():
+    cadena = gl.flag_robot + "," +  str(gl.t_actual)  + "," +  str(gl.Input_d)  + "," +  str(gl.d_ref)  + "," +  str(gl.vel_ref)  + "," +  str(gl.Input_vel)  + "," +  str(gl.Input_theta)  + "," +  str(gl.Output_d)  + "," +   str(gl.Output_vel)  + "," +  str(gl.Output_theta)  + "," +  str(gl.curvatura) + "," +  str(gl.vel_crucero)  + "," +  str(gl.curvatura_predecesor)  + "," +  str(gl.control)    
+    msg = str.encode(cadena)
     if(gl.flag_debug_udp or gl.flag_debug):
-        print("funcion enviar informacion a sucesor")
-    if (mensaje == "L/estado_predecesor"):
-        cadena = "V/" + gl.parar + "/" + str(gl.Input_vel) + "/" + str(gl.vel_ref) + "/" + str(gl.curvatura_predecesor)
-    else:
-        cadena = "incorrecto"
-    for i in range (3):
-        msg = str.encode(cadena)
-        if(gl.flag_debug_udp or gl.flag_debug):
-            print("voy a enviar al monitor (o sucesor) " + str.i + " veces la cadena: " + cadena)
-        socket_udp.sendto(msg, monitor)
+        print("voy a enviar al monitor la cadena : " + cadena)
+    socket_udp.sendto(msg, gl.monitor)
+ 
+
+#def udp_recep():    #PENDIENTE
+#    global data
+#    paquete_entrante = data.decode('UTF-8')
+#    len_data = len(data)
+#    if (len_data > 0):
+#        #paquete_entrante[len_data] = 0
+#        if(paquete_entrante[0] == "L"):
+#            if(gl.flag_debug_udp or gl.flag_debug):
+#                print("recibi un L, monitor o sucesor esta pidiendo datos")
+#            lectura_estado(len_data)
+#
+        #elif (paquete_entrante[0]== "E"):   #queda deshabilitado porque se hace a traves de ubidots#
+
+#        elif(paquete_entrante[0] == "V"):
+#            if(gl.flag_debug_udp or gl.flag_debug):
+#                print("recibi un V, predecesor esta enviando datos")   
+#            estado_predecesor(len_data)
+
+#def lectura_estado(len_data):   #PENDIENTE
+#    global data, socket_udp, monitor
+#    mensaje = data.decode('UTF-8')
+#    if(gl.flag_debug_udp or gl.flag_debug):
+#        print("funcion enviar informacion a sucesor")
+#    if (mensaje == "L/estado_predecesor"):
+#        cadena = "V/" + gl.parar + "/" + str(gl.Input_vel) + "/" + str(gl.vel_ref) + "/" + str(gl.curvatura_predecesor)
+#    else:
+#        cadena = "incorrecto"
+#    for i in range (3):
+#        msg = str.encode(cadena)
+#        if(gl.flag_debug_udp or gl.flag_debug):
+#            print("voy a enviar al monitor (o sucesor) " + str.i + " veces la cadena: " + cadena)
+#        socket_udp.sendto(msg, monitor)
 
 
-def estado_predecesor(len_data):
-    global data
-    mensaje = data.decode('UTF-8')
-    if(gl.flag_debug_udp or gl.flag_debug):
-        print("funcion obtener estado predecesor con mensaje: " + mensaje)
-    valores = mensaje.split("/")
-    if (len(valores) < 3):
-        if(gl.flag_debug_udp or gl.flag_debug):
-            print("datos insuficientes")
-    else:
-        parar = valores[0]
-        vel = valores[1]
-        refvel = valores[2]
-        curvaprede = valores[3] 
-        #falta completar
+#def estado_predecesor(len_data): #PENDIENTE
+#    global data
+#    mensaje = data.decode('UTF-8')
+#    if(gl.flag_debug_udp or gl.flag_debug):
+#        print("funcion obtener estado predecesor con mensaje: " + mensaje)
+#    valores = mensaje.split("/")
+#    if (len(valores) < 3):
+#        if(gl.flag_debug_udp or gl.flag_debug):
+#            print("datos insuficientes")
+#    else:
+#        parar = valores[0]
+#        vel = valores[1]
+#        refvel = valores[2]
+#        curvaprede = valores[3] 
+#        #falta completar
 
 
 
