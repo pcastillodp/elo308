@@ -45,17 +45,18 @@ def on_message(client, userdata, msg):
         print("sisub: msg received with topic: {} and payload: {}".format(msg.topic, str(msg.payload)))
     variable = msg.topic.split('/')[4]  
     valor = msg.payload.decode("utf-8") 
-    if (variable == "distancia_kp"): gl.Kp_d = valor
-    elif (variable == "distancia_ki"): gl.Ki_d = valor
-    elif (variable == "distancia_kd"): gl.Kd_d = valor
+    if (variable == "distancia_kp"): gl.Kp_d = float(valor)
+    elif (variable == "distancia_ki"): gl.Ki_d = float(valor)
+    elif (variable == "distancia_kd"): gl.Kd_d = float(valor)
 
-    elif (variable == "theta_kp"): gl.Kp_theta = valor
-    elif (variable == "theta_ki"): gl.Ki_theta = valor
-    elif (variable == "theta_kd"): gl.Kd_theta = valor
+    elif (variable == "theta_kp"): gl.Kp_theta = float(valor)
+    elif (variable == "theta_ki"): gl.Ki_theta = float(valor)
+    elif (variable == "theta_kd"): gl.Kd_theta = float(valor)
 
-    elif (variable == "velocidad_kp"): gl.Kp_vel = valor
-    elif (variable == "velocidad_ki"): gl.Ki_vel = valor
-    elif (variable == "velocidad_kd"): gl.Kd_vel = valor
+    elif (variable == "velocidad_kp"): gl.Kp_vel = float(valor)
+    elif (variable == "velocidad_ki"): gl.Ki_vel = float(valor)
+    elif (variable == "velocidad_kd"): gl.Kd_vel = float(valor)
+    
 
     
 def connect(mqtt_client, mqtt_username, mqtt_password, broker_endpoint, port):
