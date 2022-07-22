@@ -41,15 +41,22 @@ def on_publish(client, userdata, result):
   
 # The callback for when a message is received from the server.
 def on_message(client, userdata, msg):
-    global distancia_kp, distancia_ki, distancia_kd
-    global theta_kp, theta_ki, theta_kd
-    global velocidad_kp, velocidad_ki, velocidad_kd
     if(gl.flag_debug):
         print("sisub: msg received with topic: {} and payload: {}".format(msg.topic, str(msg.payload)))
     variable = msg.topic.split('/')[4]  
     valor = msg.payload.decode("utf-8") 
-    if (variable == "distancia_kp"):
-        gl.Kp_distancia = valor
+    if (variable == "distancia_kp"): gl.Kp_d = valor
+    elif (variable == "distancia_ki"): gl.Ki_d = valor
+    elif (variable == "distancia_kd"): gl.Kd_d = valor
+
+    elif (variable == "theta_kp"): gl.Kp_theta = valor
+    elif (variable == "theta_ki"): gl.Ki_theta = valor
+    elif (variable == "theta_kd"): gl.Kd_theta = valor
+
+    elif (variable == "velocidad_kp"): gl.Kp_vel = valor
+    elif (variable == "velocidad_ki"): gl.Ki_vel = valor
+    elif (variable == "velocidad_kd"): gl.Kd_vel = valor
+
     
 def connect(mqtt_client, mqtt_username, mqtt_password, broker_endpoint, port):
     global connected

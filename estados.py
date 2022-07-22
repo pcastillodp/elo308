@@ -122,17 +122,6 @@ def ciclo_de_control():
 			logging.info("velocidad: " + str(gl.Input_vel))
 			logging.info("theta: " + str(gl.Input_theta))
 			logging.info("distancia: " + str(gl.Input_d))
-
-		if(gl.flag_ubidots):
-			t2 = threading.Thread(target = conexion.publicar, args =("velocidad", gl.Input_vel) )
-			t2.setDaemon(True)
-			t2.start()
-			t3 = threading.Thread(target = conexion.publicar, args =("theta", gl.Input_theta) )
-			t3.setDaemon(True)
-			t3.start()
-			t4 = threading.Thread(target = conexion.publicar, args =("distancia", gl.Input_d) )
-			t4.setDaemon(True)
-			t4.start()
 	
 	actuadores.motor(gl.Output_vel - gl.Output_theta - gl.Output_d, gl.Output_vel + gl.Output_theta + gl.Output_d)
 	

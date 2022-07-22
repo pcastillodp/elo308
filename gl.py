@@ -7,11 +7,11 @@ global control
 control = 0.0
 
 #flags para debug
-flag_debug = False      #activa los print
-flag_debug_udp = True
+flag_debug = True      #activa los print
+flag_debug_udp = False
 flag_logger = False     #activa que escriba el archivo logger
-flag_ubidots = False    #activa la suscripcion y publicacion en ubidots
-flag_udp = True         #activa comunicacion upd
+flag_ubidots = True    #activa la suscripcion y publicacion en ubidots
+flag_udp = False        #activa comunicacion upd
 flag_calibrar = False   #activa la rutina de calibracion de los sensores IR
 flag_peloton = True     #activa la funcionalidad multiagente
 flag_robot = "L"        #Lider por defecto
