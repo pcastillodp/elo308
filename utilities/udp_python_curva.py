@@ -31,7 +31,7 @@ while True:
     data, addr = sock.recvfrom(4096) # buffer size is 1024 byte
     testo = str(data.decode('utf-8'))
     texto = open(file_name,"a")
-    texto.write(datetime.datetime.now() + "," + testo +'\n')
+    texto.write(str(datetime.datetime.now()) + "," + testo +'\n')
     texto.close()
     print(testo)
     
