@@ -5,6 +5,7 @@ import socket
 import json
 import time
 import gl
+import configuracion
 
 
 
@@ -56,7 +57,12 @@ def on_message(client, userdata, msg):
     elif (variable == "velocidad_kp"): gl.Kp_vel = float(valor)
     elif (variable == "velocidad_ki"): gl.Ki_vel = float(valor)
     elif (variable == "velocidad_kd"): gl.Kd_vel = float(valor)
-    
+
+    elif (variable == "sp_vel"): gl.sp_vel = float(valor)
+    elif (variable == "delta"): gl.delta = float(valor)
+    elif (variable == "d_ref"): gl.d_ref = float(valor)
+    elif (variable == "calibrar"): gl.calibrar = float(valor)
+    elif (variable == "parar"): gl.parar = str(valor)
 
     
 def connect(mqtt_client, mqtt_username, mqtt_password, broker_endpoint, port):
@@ -150,56 +156,63 @@ def udp_monitor():
         print("voy a enviar al monitor la cadena : " + cadena)
     socket_udp.sendto(msg, gl.monitor)
  
-
-#def udp_recep():    #PENDIENTE
-#    global data
-#    paquete_entrante = data.decode('UTF-8')
-#    len_data = len(data)
-#    if (len_data > 0):
-#        #paquete_entrante[len_data] = 0
-#        if(paquete_entrante[0] == "L"):
-#            if(gl.flag_debug_udp or gl.flag_debug):
-#                print("recibi un L, monitor o sucesor esta pidiendo datos")
-#            lectura_estado(len_data)
-#
-        #elif (paquete_entrante[0]== "E"):   #queda deshabilitado porque se hace a traves de ubidots#
-
-#        elif(paquete_entrante[0] == "V"):
-#            if(gl.flag_debug_udp or gl.flag_debug):
-#                print("recibi un V, predecesor esta enviando datos")   
-#            estado_predecesor(len_data)
-
-#def lectura_estado(len_data):   #PENDIENTE
-#    global data, socket_udp, monitor
-#    mensaje = data.decode('UTF-8')
-#    if(gl.flag_debug_udp or gl.flag_debug):
-#        print("funcion enviar informacion a sucesor")
-#    if (mensaje == "L/estado_predecesor"):
-#        cadena = "V/" + gl.parar + "/" + str(gl.Input_vel) + "/" + str(gl.vel_ref) + "/" + str(gl.curvatura_predecesor)
-#    else:
-#        cadena = "incorrecto"
-#    for i in range (3):
-#        msg = str.encode(cadena)
-#        if(gl.flag_debug_udp or gl.flag_debug):
-#            print("voy a enviar al monitor (o sucesor) " + str.i + " veces la cadena: " + cadena)
-#        socket_udp.sendto(msg, monitor)
+def udp_recep():
+    global data
+    paquete_entrante = data.decode('UTF-8')
+    len_data = len(data)
+    if (len_data > 0):
+        if(paquete_entrante[0] == "L"):
+            lectura_estado(len_data)
+        elif (paquete_entrante[0] == "V"):
+            estado_predecesor(len_data)
 
 
-#def estado_predecesor(len_data): #PENDIENTE
-#    global data
-#    mensaje = data.decode('UTF-8')
-#    if(gl.flag_debug_udp or gl.flag_debug):
-#        print("funcion obtener estado predecesor con mensaje: " + mensaje)
-#    valores = mensaje.split("/")
-#    if (len(valores) < 3):
-#        if(gl.flag_debug_udp or gl.flag_debug):
-#            print("datos insuficientes")
-#    else:
-#        parar = valores[0]
-#        vel = valores[1]
-#        refvel = valores[2]
-#        curvaprede = valores[3] 
-#        #falta completar
+
+def lectura_estado(len_data):   
+    global data, socket_udp, monitor
+    mensaje = data.decode('UTF-8')
+    if(gl.flag_debug_udp or gl.flag_debug):
+        print("funcion enviar informacion a sucesor")
+    if (mensaje == "L/estado_predecesor"):
+        cadena = "V/" + gl.parar + "/" + str(gl.Input_vel) + "/" + str(gl.vel_ref) + "/" + str(gl.curvatura_predecesor)
+    else:
+        cadena = "incorrecto"
+    for i in range (3):
+        msg = str.encode(cadena)
+        if(gl.flag_debug_udp or gl.flag_debug):
+            print("voy a enviar al monitor (o sucesor) " + str.i + " veces la cadena: " + cadena)
+        socket_udp.sendto(msg, monitor)
+
+def estado_predecesor(len_data): 
+    global data
+    mensaje = data.decode('UTF-8')
+    if(gl.flag_debug_udp or gl.flag_debug):
+        print("funcion obtener estado predecesor con mensaje: " + mensaje)
+    valores = mensaje.split("/")
+    if (len(valores) < 4):
+        if(gl.flag_debug_udp or gl.flag_debug):
+            print("datos insuficientes")
+    else:
+        gl.parar = valores[1]
+
+        if(gl.flag_control):
+            gl.vel_crucero = float(valores[2])
+
+        if(gl.flag_saturacion_predecesor):
+            configuracion.sat_d = float(valores[3])
+
+        if (float(valores[3]) >= 0):
+            configuracion.sat_d = 1 * float(valores[3]) + 1
+        else:
+            configuracion.sat_d = -1 * float(valores[3]) + 1
+
+        if(gl.flag_control):
+            gl.vel_crucero = float(valores[2])
+        
+        gl.curvatura_predecesor = valores[4] 
+
+
+
 
 
 

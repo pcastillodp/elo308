@@ -4,7 +4,7 @@ import configuracion
 
 #FALTA IMPLEMENTAR#
 global control
-control = 0.0
+control = False
 
 #flags para debug
 flag_debug = True      #activa los print
@@ -15,6 +15,8 @@ flag_udp = False        #activa comunicacion upd
 flag_calibrar = False   #activa la rutina de calibracion de los sensores IR
 flag_peloton = True     #activa la funcionalidad multiagente
 flag_robot = "L"        #Lider por defecto
+flag_control = True     # activa switche curvatura
+flag_saturacion_predecesor = False  ##preguntar!!!!       <---------------------------
 
 #para comunicacion UDP
 global monitor, lider, seguidor1, seguidor2, seguidor3, bufferSize, data
@@ -62,6 +64,7 @@ Input_vel = 0.0       #promedio de velocidades actuales R y L
 Output_vel= 0.0
 vel_ref = 0.0
 vel_crucero = 0.0
+sp_vel = 0.0
 Kp_vel = 3 #5.75351825345478 #20.3 #100;//49.9757241214599;//130;
 Ki_vel = 1 #0.100712270288173 #145.3 #282.271150682254;//130;
 Kd_vel = 0 #0 #0.197722771627088;//0;
@@ -84,7 +87,7 @@ Output_d = 0
 error_d = 0
 d_ref= 0
 #alpha_fuzzy=1
-#delta = 0.1
+delta = 0.1
 Kp_d = 0 #100 #1.5;//8.0013
 Ki_d = 0 #11;//5.6025
 Kd_d = 0 #0.1;//1.0077

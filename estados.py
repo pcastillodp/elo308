@@ -11,6 +11,8 @@ import threading    #hilos
 
 
 def ciclo_de_inicio():
+	if (gl.flag_udp):
+		conexion.udp_recep() #falta
 	gl.PID_theta = "MANUAL"
 	gl.PID_vel = "MANUAL"
 	gl.PID_d = "MANUAL"
@@ -23,14 +25,14 @@ def ciclo_de_inicio():
 	gl.Output_d=0.0
 	gl.Output_vel=0.0
 	gl.Output_theta=0.0
-	#gl.d_ref = sensores.distancia()
-	#gl.sp_vel = 0.0
+	gl.d_ref = sensores.distancia()
+	gl.sp_vel = 0.0
 	gl.Input_vel=0.0
 	gl.vel_ref=0.0
 	actuadores.motor(0,0)
 	configuracion.encoderD.write(0)   
 	configuracion.encoderL.write(0)
-	sensores.obtenerPosicion(1)
+	#sensores.obtenerPosicion(1)
 	gl.t_controlador=time.time()
 	if (gl.flag_udp):
 		conexion.udp_transm()
@@ -44,58 +46,81 @@ def ciclo_de_calibracion():
 	gl.parar = "no"
 	
 def ciclo_de_control():
-	#conexion.udp_recep()
-	gl.PID_vel="AUTO"
-	gl.PID_theta="AUTO"
-	gl.PID_d="AUTO"
-	
-	gl.Input_d = sensores.distancia()		#mide entrada de PID distancia
-	sensores.velocidades()					#calcula entrada de PID velocidad
-	sensores.curvaturaPista()				#revisa si está en una recta o curvatura
+	if (gl.flag_udp):
+		conexion.udp_recep()
+	gl.Input_d = sensores.distancia()
 
+	if (gl.flag_robot is not "L"):
+		gl.error_d = gl.Input_d - gl.d_ref
+	else:
+		gl.error_d = 0
+
+	sensores.velocidades()	
+	sensores.curvaturaPista()
+
+	if (gl.flag_control):
+		gl.control = ((gl.curvatura_predecesor <= 0.01) and (gl.curvatura <= 0.01))
+	
 	if (gl.Output_vel<0):		#calcula entrada de PID angulo linea			
 		gl.Input_theta=-1*sensores.obtenerPosicion(0)/configuracion.d2		#recorrido inverso
 	else:
 		gl.Input_theta= sensores.obtenerPosicion(1)/configuracion.d1		#recorrido hacia delante
 
-	#if(abs(gl.error_d) >= gl.delta + 1):
-	#	gl.PID_theta="AUTO"
-	#	gl.PID_vel="AUTO"
-	#	gl.PID_d="MANUAL"
-	#	gl.Output_d=0
-	#	gl.error_ant_d=0
-	#	gl.integral_d=0
-	#	gl.error_d=0
+	gl.PID_vel="AUTO"
+	gl.PID_theta="AUTO"
+	gl.PID_d="AUTO"
+	
+	if((abs(gl.error_d) >= gl.delta + 1) or (gl.flag_robot == "L")):
+		gl.PID_theta="AUTO"
+		gl.PID_vel="AUTO"
+		if (gl.control):
+			gl.PID_d="AUTO"
+		else:
+			gl.PID_d="MANUAL"
+			gl.Output_vel = gl.vel_crucero
+			gl.error_ant_d=0
+			gl.integral_d = gl.vel_crucero / gl.Ki_d - gl.error_d * 0.04
+		if (gl.flag_robot == "L"):
+			gl.PID_d = "MANUAL"
+			gl.Output_d = 0
+			gl.error_ant_d = 0
+			gl.integral_d = 0
+			gl.error_d = 0
 
-
-
-	#if (abs(gl.Input_vel) <= 6 & abs(gl.Input_theta) <= 0.015 & (abs(gl.error_d)<gl.delta)&(gl.sp_vel == 0)):
-	#	gl.PID_d="MANUAL"
-	#	gl.PID_vel="MANUAL"
-	#	gl.PID_theta="MANUAL"
-	#	gl.Output_d = 0
-	#	gl.Output_vel = 0
-	#	gl.Output_theta = 0
-	#	gl.error_ant_d=0
-	#	gl.integral_d=0
-	#	gl.error_ant_vel=0
-	#	gl.integral_vel=0
-	#	gl.error_ant_theta=0
-	#	gl.integral_theta=0
+	if ((abs(gl.Input_vel) <= 6) and (abs(gl.Input_theta) <= 0.015) and (abs(gl.error_d)<gl.delta) and ((gl.sp_vel == 0) or gl.flag_robot is not "L")):
+		gl.PID_d="MANUAL"
+		gl.PID_vel="MANUAL"
+		gl.PID_theta="MANUAL"
+		gl.Output_d = 0
+		gl.Output_vel = 0
+		gl.Output_theta = 0
+		gl.error_ant_d=0
+		gl.integral_d=0
+		gl.error_ant_vel=0
+		gl.integral_vel=0
+		gl.error_ant_theta=0
+		gl.integral_theta=0
 	
 	if (gl.flag_udp):
 		conexion.udp_transm()
 
 	gl.t_actual = time.time() - gl.t_controlador
 	if (gl.t_actual >= 0.04):							#se activa cada 40 ms
-		gl.Output_d=calculoPID(gl.Input_d, configuracion.d_ref, gl.error_ant_d, gl.integral_d, gl.Kp_d, gl.Ki_d, gl.Kd_d, configuracion.sat_d, gl.PID_d, gl.Output_d, "INVERSO")
-		#gl.vel_ref=gl.Output_d*gl.sp_vel
+		if(gl.flag_saturacion_predecesor):
+			gl.Output_d=calculoPIDd(gl.Input_d, configuracion.d_ref, gl.error_ant_d, gl.integral_d, gl.Kp_d, gl.Ki_d, gl.Kd_d, configuracion.sat_d, gl.PID_d, gl.Output_d, "INVERSO")
+		else:
+			gl.Output_d=calculoPID(gl.Input_d, configuracion.d_ref, gl.error_ant_d, gl.integral_d, gl.Kp_d, gl.Ki_d, gl.Kd_d, configuracion.sat_d, gl.PID_d, gl.Output_d, "INVERSO")
+		if (gl.flag_robot == "L"):
+			gl.vel_ref=gl.sp_vel
+		else:
+			gl.vel_ref=gl.Output_d
 		gl.Output_vel=calculoPID(gl.Input_vel, configuracion.vel_ref, gl.error_ant_vel, gl.integral_vel, gl.Kp_vel, gl.Ki_vel, gl.Kd_vel, configuracion.sat_vel, gl.PID_vel, gl.Output_vel, "DIRECTO")
 		gl.Output_theta=calculoPID(gl.Input_theta, configuracion.theta_ref, gl.error_ant_theta, gl.integral_theta, gl.Kp_theta, gl.Ki_theta, gl.Kd_theta, configuracion.sat_theta, gl.PID_theta, gl.Output_theta, "DIRECTO")
-		gl.t_controlador=time.time()
 
 		if(gl.flag_udp):
 			conexion.udp_monitor()
+		gl.t_controlador=time.time()
+
 	
 	if (gl.t_actual >= 0.05):							#se activa cada 0.5s
 		if (gl.flag_debug):
@@ -123,7 +148,8 @@ def ciclo_de_control():
 			logging.info("theta: " + str(gl.Input_theta))
 			logging.info("distancia: " + str(gl.Input_d))
 	
-	actuadores.motor(gl.Output_vel - gl.Output_theta - gl.Output_d, gl.Output_vel + gl.Output_theta + gl.Output_d)
+	#actuadores.motor(gl.Output_vel - gl.Output_theta - gl.Output_d, gl.Output_vel + gl.Output_theta + gl.Output_d)
+	actuadores.motor(gl.Output_vel - gl.Output_theta , gl.Output_vel + gl.Output_theta)
 	
 
 def calculoPID (y, ref, error_ant, error_integral, kp, ki, kd, limite, MODO, out_manual, direccion):
@@ -149,5 +175,31 @@ def calculoPID (y, ref, error_ant, error_integral, kp, ki, kd, limite, MODO, out
 			return limite
 		elif (u<-limite):
 			return -limite
+		else:
+			return u
+
+def calculoPIDd (y, ref, error_ant, error_integral, kp, ki, kd, limite, MODO, out_manual, direccion):
+	if (MODO == "MANUAL"):
+		return out_manual
+	
+	elif (MODO == "AUTO"):
+		if(direccion=="DIRECTO"):
+			error=ref-y
+		elif(direccion =="INVERSO"):
+			error=y-ref
+		error_integral[0] = error_integral[0] + error*gl.t_actual
+		if(error_integral[0] * ki > limite):
+			error_integral[0] = limite /ki
+		elif(ki*error_integral[0] < -limite):
+			error_integral[0] = -limite /ki
+		u=kp*error + error_integral[0]*ki + kd*(error-error_ant[0] )/(gl.t_actual)
+		if (gl.flag_debug):
+			print("u: " + str(u))
+		error_ant[0] = error
+
+		if(u> (limite * 1.1 + 1)):
+			return limite * 1.1 + 1
+		elif (u< (limite * 0.9 - 1)):
+			return limite * 0.9 - 1
 		else:
 			return u
