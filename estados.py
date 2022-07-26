@@ -12,7 +12,7 @@ import threading    #hilos
 
 def ciclo_de_inicio():
 	if (gl.flag_udp):
-		conexion.udp_recep() #falta
+		conexion.udp_recep() 
 	gl.PID_theta = "MANUAL"
 	gl.PID_vel = "MANUAL"
 	gl.PID_d = "MANUAL"
@@ -26,17 +26,17 @@ def ciclo_de_inicio():
 	gl.Output_vel=0.0
 	gl.Output_theta=0.0
 	#configuracion.d_ref = sensores.distancia()
-	gl.sp_vel = 0.0
+	#gl.sp_vel = 0.0
 	gl.Input_vel=0.0
 	#configuracion.vel_ref=0.0
 	actuadores.motor(0,0)
 	configuracion.encoderD.write(0)   
 	configuracion.encoderL.write(0)
-	#sensores.obtenerPosicion(1)
+	sensores.obtenerPosicion(1)
 	gl.t_controlador=time.time()
 	if (gl.flag_udp):
 		conexion.udp_transm()
-		if(gl.flag_debug):
+		if(gl.flag_debug_udp):
 			print("se intenta mandar informacion udp")
 
 def ciclo_de_calibracion():
@@ -126,21 +126,25 @@ def ciclo_de_control():
 		if (gl.flag_debug):
 			print("\n*****VELOCIDAD	**")
 			print("Input: " + str(gl.Input_vel))
-			print("ref: " + str(configuracion.vel_ref))
+			print("ref: " + str(configuracion.vel_ref) + " sp_vel: " + str(gl.sp_vel))
 			print("error_ant: " + str(gl.error_ant_vel[0]))
 			print("Output: " + str(gl.Output_vel))
+			print("KP : " + str(gl.Kp_vel) + " KI: " +  str(gl.Ki_vel) + " KD: "+  str(gl.Ki_vel))
 			print("\n******THETA	**")
 			print("Input: " + str(gl.Input_theta))
 			print("ref: " + str(configuracion.theta_ref))
 			print("error_ant: " + str(gl.error_ant_theta[0]))
 			print("Output: " + str(gl.Output_theta))
+			print("KP : " + str(gl.Kp_theta) + " KI: " +  str(gl.Ki_theta) + " KD: "+  str(gl.Ki_theta))
 			print("\n*****DISTANCIA	**")
 			print("Input: " + str(gl.Input_d))
 			print("ref: " + str(configuracion.d_ref))
 			print("error_ant: " + str(gl.error_ant_d[0]))
 			print("Output: " + str(gl.Output_d))
+			print("KP : " + str(gl.Kp_d) + " KI: " +  str(gl.Ki_d) + " KD: "+  str(gl.Kd_d))
 			print("\n*****CURVATURA**")
 			print("recta: " + str(gl.recta) + " curvatura: " + str(gl.curvatura))
+			print("parar: " + str(gl.parar))
 			print("***")
 		
 		if(gl.flag_logger):
