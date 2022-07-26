@@ -111,7 +111,7 @@ def publicar(variable, valor):
 """
 
 socket_udp = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-
+data = bytearray()
 
 def udp_transm():   #Transmite informacion al robot sucesor
     global socket_udp

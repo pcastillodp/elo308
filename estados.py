@@ -50,7 +50,7 @@ def ciclo_de_control():
 		conexion.udp_recep()
 	gl.Input_d = sensores.distancia()
 
-	if (gl.flag_robot is not "L"):
+	if (gl.flag_robot != "L"):
 		gl.error_d = gl.Input_d - gl.d_ref
 	else:
 		gl.error_d = 0
@@ -78,28 +78,28 @@ def ciclo_de_control():
 		else:
 			gl.PID_d="MANUAL"
 			gl.Output_vel = gl.vel_crucero
-			gl.error_ant_d=0
-			gl.integral_d = gl.vel_crucero / gl.Ki_d - gl.error_d * 0.04
+			gl.error_ant_d = [0.0]
+			gl.integral_d = [gl.vel_crucero / gl.Ki_d - gl.error_d * 0.04]
 		if (gl.flag_robot == "L"):
 			gl.PID_d = "MANUAL"
 			gl.Output_d = 0
-			gl.error_ant_d = 0
-			gl.integral_d = 0
+			gl.error_ant_d = [0.0]
+			gl.integral_d = [0.0]
 			gl.error_d = 0
 
-	if ((abs(gl.Input_vel) <= 6) and (abs(gl.Input_theta) <= 0.015) and (abs(gl.error_d)<gl.delta) and ((gl.sp_vel == 0) or gl.flag_robot is not "L")):
+	if ((abs(gl.Input_vel) <= 6) and (abs(gl.Input_theta) <= 0.015) and (abs(gl.error_d)<gl.delta) and ((gl.sp_vel == 0) or gl.flag_robot != "L")):
 		gl.PID_d="MANUAL"
 		gl.PID_vel="MANUAL"
 		gl.PID_theta="MANUAL"
 		gl.Output_d = 0
 		gl.Output_vel = 0
 		gl.Output_theta = 0
-		gl.error_ant_d=0
-		gl.integral_d=0
-		gl.error_ant_vel=0
-		gl.integral_vel=0
-		gl.error_ant_theta=0
-		gl.integral_theta=0
+		gl.error_ant_d=[0.0]
+		gl.integral_d=[0.0]
+		gl.error_ant_vel=[0.0]
+		gl.integral_vel=[0.0]
+		gl.error_ant_theta=[0.0]
+		gl.integral_theta=[0.0]
 	
 	if (gl.flag_udp):
 		conexion.udp_transm()
