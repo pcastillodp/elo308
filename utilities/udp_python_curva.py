@@ -10,6 +10,7 @@ import sys
 import pymysql
 import csv
 import socket
+import datetime
 #Ajustables
 file_name = "C:\\Users\\Poletarro\\Desktop\\Memoria\\servidor_udp\\monitoreo.csv"  # archivo csv
 
@@ -22,16 +23,15 @@ sock.bind((UDP_IP, UDP_PORT))
 texto = open(file_name,'w')
 #estado = "T,"+String(Input_d)+","+String(d_ref)+","+String(vel_ref)+","+String(Input_vel)+","+String(Input_theta)+","+String(Output_d)+","+String(Output_vel)+","+String(Output_theta);
  
-texto.write('Robot,Delta_muestra,Input_d,d_ref,vel_ref,Input_vel,Input_theta,Output_d,Output_vel,Output_theta,curvatura,vel_crucero,curvatura_predecesor,control'+'\n')
+texto.write('Timestamp,Robot,Delta_muestra,Input_d,d_ref,vel_ref,Input_vel,Input_theta,Output_d,Output_vel,Output_theta,curvatura,vel_crucero,curvatura_predecesor,control'+'\n')
 
 texto.close()
 
 while True:
     data, addr = sock.recvfrom(4096) # buffer size is 1024 byte
     testo = str(data.decode('utf-8'))
-    lista = testo.split(",")
     texto = open(file_name,"a")
-    texto.write(testo+'\n')
+    texto.write(datetime.datetime.now() + "," + testo +'\n')
     texto.close()
     print(testo)
     
