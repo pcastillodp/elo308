@@ -60,7 +60,7 @@ def on_message(client, userdata, msg):
 
     elif (variable == "sp_vel"): gl.sp_vel = float(valor)
     elif (variable == "delta"): gl.delta = float(valor)
-    elif (variable == "d_ref"): gl.d_ref = float(valor)
+    elif (variable == "d_ref"): configuracion.d_ref = float(valor)
     elif (variable == "calibrar"): gl.calibrar = float(valor)
     elif (variable == "parar"): gl.parar = str(valor)
 
@@ -150,7 +150,7 @@ def setup_udp():
             print(data)
 
 def udp_monitor():
-    cadena = gl.flag_robot + "," +  str(gl.t_actual)  + "," +  str(gl.Input_d)  + "," +  str(gl.d_ref)  + "," +  str(gl.vel_ref)  + "," +  str(gl.Input_vel)  + "," +  str(gl.Input_theta)  + "," +  str(gl.Output_d)  + "," +   str(gl.Output_vel)  + "," +  str(gl.Output_theta)  + "," +  str(gl.curvatura) + "," +  str(gl.vel_crucero)  + "," +  str(gl.curvatura_predecesor)  + "," +  str(gl.control)    
+    cadena = gl.flag_robot + "," +  str(gl.t_actual)  + "," +  str(gl.Input_d)  + "," +  str(configuracion.d_ref)  + "," +  str(configuracion.vel_ref)  + "," +  str(gl.Input_vel)  + "," +  str(gl.Input_theta)  + "," +  str(gl.Output_d)  + "," +   str(gl.Output_vel)  + "," +  str(gl.Output_theta)  + "," +  str(gl.curvatura) + "," +  str(gl.vel_crucero)  + "," +  str(gl.curvatura_predecesor)  + "," +  str(gl.control)    
     msg = str.encode(cadena)
     if(gl.flag_debug_udp or gl.flag_debug):
         print("voy a enviar al monitor la cadena : " + cadena)

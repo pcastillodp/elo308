@@ -81,11 +81,10 @@ error_ant_d=[0.0]
 integral_d=[0.0]
 
 #Variables controlador PID para la distancia
-global Input_d, Output_d, d_ref, error_d, alpha_fuzzy, delta, Kp_d, Ki_d, Kd_d, distFiltro
+global Input_d, Output_d, error_d, alpha_fuzzy, delta, Kp_d, Ki_d, Kd_d, distFiltro
 Input_d = 0         #entrada del PID de distancia, es la distancia que existe hacia delante
 Output_d = 0
 error_d = 0
-d_ref= 0
 #alpha_fuzzy=1
 delta = 0.1
 Kp_d = 0 #100 #1.5;//8.0013

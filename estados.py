@@ -25,10 +25,10 @@ def ciclo_de_inicio():
 	gl.Output_d=0.0
 	gl.Output_vel=0.0
 	gl.Output_theta=0.0
-	gl.d_ref = sensores.distancia()
+	#configuracion.d_ref = sensores.distancia()
 	gl.sp_vel = 0.0
 	gl.Input_vel=0.0
-	gl.vel_ref=0.0
+	#configuracion.vel_ref=0.0
 	actuadores.motor(0,0)
 	configuracion.encoderD.write(0)   
 	configuracion.encoderL.write(0)
@@ -51,7 +51,7 @@ def ciclo_de_control():
 	gl.Input_d = sensores.distancia()
 
 	if (gl.flag_robot != "L"):
-		gl.error_d = gl.Input_d - gl.d_ref
+		gl.error_d = gl.Input_d - configuracion.d_ref
 	else:
 		gl.error_d = 0
 
@@ -111,9 +111,9 @@ def ciclo_de_control():
 		else:
 			gl.Output_d=calculoPID(gl.Input_d, configuracion.d_ref, gl.error_ant_d, gl.integral_d, gl.Kp_d, gl.Ki_d, gl.Kd_d, configuracion.sat_d, gl.PID_d, gl.Output_d, "INVERSO")
 		if (gl.flag_robot == "L"):
-			gl.vel_ref=gl.sp_vel
+			configuracion.vel_ref=gl.sp_vel
 		else:
-			gl.vel_ref=gl.Output_d
+			configuracion.vel_ref=gl.Output_d
 		gl.Output_vel=calculoPID(gl.Input_vel, configuracion.vel_ref, gl.error_ant_vel, gl.integral_vel, gl.Kp_vel, gl.Ki_vel, gl.Kd_vel, configuracion.sat_vel, gl.PID_vel, gl.Output_vel, "DIRECTO")
 		gl.Output_theta=calculoPID(gl.Input_theta, configuracion.theta_ref, gl.error_ant_theta, gl.integral_theta, gl.Kp_theta, gl.Ki_theta, gl.Kd_theta, configuracion.sat_theta, gl.PID_theta, gl.Output_theta, "DIRECTO")
 
