@@ -33,11 +33,13 @@ def main(args=None):
 
     if(gl.flag_udp):
         ip_local = os.popen('hostname -I').read().strip()
+        print(configuracion.lider[0])
 
-        if(ip_local == "192.168.100.18"): gl.flag_robot = "L"
-        elif(ip_local == "192.168.100.20"): gl.flag_robot = "S1"
-        elif(ip_local == "192.168.100.22"): gl.flag_robot = "S2"
-        elif(ip_local == "192.168.100.23"): gl.flag_robot = "S3"
+        if(ip_local == configuracion.lider[0]): gl.flag_robot = "L"
+        elif(ip_local == configuracion.seguidor1[0]): gl.flag_robot = "S1"
+        elif(ip_local == configuracion.seguidor2[0]): gl.flag_robot = "S2"
+        elif(ip_local == configuracion.seguidor3[0]): gl.flag_robot = "S3"
+        elif(ip_local == configuracion.seguidor4[0]): gl.flag_robot = "S4"
         else: gl.flag_robot = "L"
 
         if(gl.flag_debug or gl.flag_debug_udp):

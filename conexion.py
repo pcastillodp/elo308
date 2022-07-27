@@ -119,10 +119,10 @@ def udp_transm():   #Transmite informacion al robot sucesor
     if (gl.t_actual >= 0.1):    #0.1 segundo
         cadena = "V/" + gl.parar + "/" + str(gl.Input_vel) + "/" + str(gl.vel_ref) + "/" + str(gl.curvatura)
         msg = str.encode(cadena)
-        if(gl.flag_robot == "L"): sucesor = gl.seguidor1
-        elif (gl.flag_robot == "S1"): sucesor = gl.seguidor2
-        elif (gl.flag_robot == "S2"): sucesor = gl.seguidor3
-        else: sucesor = gl.seguidor1
+        if(gl.flag_robot == "L"): sucesor = configuracion.seguidor1
+        elif (gl.flag_robot == "S1"): sucesor = configuracion.seguidor2
+        elif (gl.flag_robot == "S2"): sucesor = configuracion.seguidor3
+        else: sucesor = configuracion.seguidor1
         if(gl.flag_debug_udp):
             print("voy a enviar al sucesor" + str(sucesor) + " la cadena : " + cadena)
         socket_udp.sendto(msg, sucesor)
@@ -130,11 +130,11 @@ def udp_transm():   #Transmite informacion al robot sucesor
 
 def setup_udp():
     global socket_udp, data
-    if(gl.flag_robot == "L"): local = gl.lider
-    elif (gl.flag_robot == "S1"): local = gl.seguidor1
-    elif (gl.flag_robot == "S2"): local = gl.seguidor2
-    elif (gl.flag_robot == "S3"): local = gl.seguidor3
-    else: local = gl.lider
+    if(gl.flag_robot == "L"): local = configuracion.lider
+    elif (gl.flag_robot == "S1"): local = configuracion.seguidor1
+    elif (gl.flag_robot == "S2"): local = configuracion.seguidor2
+    elif (gl.flag_robot == "S3"): local = configuracion.seguidor3
+    else: local = configuracion.lider
 
     if(gl.flag_debug_udp):
         print('abriendo servidor udp en {} port {}'.format(*local))
@@ -154,7 +154,7 @@ def udp_monitor():
     msg = str.encode(cadena)
     if(gl.flag_debug_udp):
         print("voy a enviar al monitor la cadena : " + cadena)
-    socket_udp.sendto(msg, gl.monitor)
+    socket_udp.sendto(msg, configuracion.monitor)
  
 def udp_recep():
     global data
@@ -169,7 +169,7 @@ def udp_recep():
 
 
 def lectura_estado(len_data):   
-    global data, socket_udp, monitor
+    global data, socket_udp
     mensaje = data.decode('UTF-8')
     if(gl.flag_debug_udp):
         print("funcion enviar informacion a sucesor")
@@ -179,9 +179,16 @@ def lectura_estado(len_data):
         cadena = "incorrecto"
     for i in range (3):
         msg = str.encode(cadena)
+        
+        if(gl.flag_robot == "L"): sucesor = configuracion.seguidor1
+        elif(gl.flag_robot == "S1"): sucesor = configuracion.seguidor2
+        elif(gl.flag_robot == "S2"): sucesor = configuracion.seguidor3
+        elif(gl.flag_robot == "S3"): sucesor = configuracion.seguidor4
+        
         if(gl.flag_debug_udp):
-            print("voy a enviar al monitor (o sucesor) " + str.i + " veces la cadena: " + cadena)
-        socket_udp.sendto(msg, monitor)
+            print("voy a enviar al sucesor " + str.i + " veces la cadena: " + cadena)
+        
+        socket_udp.sendto(msg, configuracion.monitor)
 
 def estado_predecesor(len_data): 
     global data
@@ -209,7 +216,7 @@ def estado_predecesor(len_data):
         if(gl.flag_control):
             gl.vel_crucero = float(valores[2])
         
-        gl.curvatura_predecesor = valores[4] 
+        gl.curvatura_predecesor = float(valores[4])
 
 
 

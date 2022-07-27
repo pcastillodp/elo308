@@ -76,3 +76,13 @@ d_ref = 10				#20 cm
 sat_theta=1023
 sat_vel=100
 sat_d=40
+
+#declaracion de ip
+global monitor, lider, seguidor1, seguidor2, seguidor3, bufferSize
+monitor = ("192.168.100.9", 1234)   #ip y puerto pc windows
+lider = ("192.168.100.18", 1111)    #ip y puerto de la raspberry
+seguidor1 = ("192.168.100.20", 1111)   #ip y puerto del robot sucesor 
+seguidor2 = ("192.168.100.22", 1111)   #ip y puerto del robot sucesor 
+seguidor3 = ("192.168.100.23", 1111)  
+seguidor4 = ("192.168.100.26", 1111)  	#PRUEBA CON ESP <-----------------
+bufferSize = 1024

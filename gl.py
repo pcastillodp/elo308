@@ -12,20 +12,14 @@ flag_debug_udp = False
 flag_logger = False     #activa que escriba el archivo logger
 flag_ubidots = True    #activa la suscripcion y publicacion en ubidots
 flag_udp = True        #activa comunicacion upd
-flag_calibrar = True   #activa la rutina de calibracion de los sensores IR
+flag_calibrar = False   #activa la rutina de calibracion de los sensores IR
 flag_peloton = True     #activa la funcionalidad multiagente
 flag_robot = "L"        #Lider por defecto
 flag_control = True     # activa switche curvatura
 flag_saturacion_predecesor = False  ##preguntar!!!!       <---------------------------
 
 #para comunicacion UDP
-global monitor, lider, seguidor1, seguidor2, seguidor3, bufferSize, data
-monitor = ("192.168.100.9", 1234)   #ip y puerto pc windows
-lider = ("192.168.100.18", 1111)    #ip y puerto de la raspberry
-seguidor1 = ("192.168.100.20", 1111)   #ip y puerto del robot sucesor 
-seguidor2 = ("192.168.100.22", 1111)   #ip y puerto del robot sucesor 
-seguidor3 = ("192.168.100.23", 1111)  
-bufferSize = 1024
+global data
 data = bytearray()
 
 #define los estados de las variables de transicion para el motor de estados
