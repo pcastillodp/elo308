@@ -59,6 +59,7 @@ def on_message(client, userdata, msg):
     elif (variable == "velocidad_kd"): gl.Kd_vel = float(valor)
 
     elif (variable == "sp_vel"): gl.sp_vel = float(valor)
+    elif (variable == "vel_crucero"): gl.vel_crucero = float(valor)
     elif (variable == "delta"): gl.delta = float(valor)
     elif (variable == "d_ref"): configuracion.d_ref = float(valor)
     elif (variable == "calibrar"): gl.calibrar = float(valor)
