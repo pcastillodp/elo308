@@ -57,8 +57,8 @@ global Input_vel, Output_vel, vel_ref, sp_vel, vel_crucero, Kp_vel,Ki_vel, Kd_ve
 Input_vel = 0.0       #promedio de velocidades actuales R y L
 Output_vel= 0.0
 vel_ref = 0.0
-vel_crucero = 0.0
-sp_vel = 15
+vel_crucero = 15.0
+sp_vel = 0.0
 Kp_vel = 3 #5.75351825345478 #20.3 #100;//49.9757241214599;//130;
 Ki_vel = 1 #0.100712270288173 #145.3 #282.271150682254;//130;
 Kd_vel = 0 #0 #0.197722771627088;//0;
@@ -93,4 +93,7 @@ global recta, curvatura, curvatura_predecesor
 recta = 0.0
 curvatura = 0.0
 curvatura_predecesor = 0.0
+
+global velocidad_calibracion
+velocidad_calibracion = 200
 

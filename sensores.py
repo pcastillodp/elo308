@@ -35,7 +35,7 @@ c_curvatura = 0.0
 def calibrarSensores():		#calibrar sensores IR
 	if(gl.flag_debug):
 		print("calibrando")
-	vcal = 50 #velocidad del motor para la calibracion
+	vcal = gl.velocidad_calibracion #velocidad del motor para la calibracion
 	gl.maximo = [0]*16 
 	gl.minimo = [32000]*16
 	
