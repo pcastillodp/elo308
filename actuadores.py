@@ -8,10 +8,13 @@ from numpy import interp
 
 global pwma
 global pwmb
-pwma = GPIO.PWM(configuracion.PWMA, configuracion.resolucionPWM)
-pwmb = GPIO.PWM(configuracion.PWMB, configuracion.resolucionPWM)
-pwma.start(100)
-pwmb.start(100)
+pwma = GPIO.PWM(configuracion.PWMA, configuracion.freqPWM)	#se crea la instancia PWM con frecuencia de 500 Hz
+pwmb = GPIO.PWM(configuracion.PWMB, configuracion.freqPWM)
+
+pwma.start(0)	#se inicia el PWM con dutycicle de 0
+pwmb.start(0)
+
+
 
 def motor (velocidadMotorIzq, velocidadMotorDer):
 
@@ -19,25 +22,14 @@ def motor (velocidadMotorIzq, velocidadMotorDer):
 	#Mueve los motores con velocidad M1 y M2 con un valor entero entre 0 y 1024
 	#En caso de introducir un número negativo, el motor se mueve en sentido inverso.
 	
-	# if(velocidadMotorIzq != 50):
-
-		# velocidadMotorIzqNor = interp(velocidadMotorIzq,[-1024,1024],[-100,100])
-		# velocidadMotorDerNor = interp(velocidadMotorDer,[-1024,1024],[-100,100])
-
-		# velocidadMotorIzq = velocidadMotorIzqNor
-		# velocidadMotorDer = velocidadMotorDerNor
-	#if (velocidadMotorIzq != 0):
-		#print("velocidad izq: " + str(velocidadMotorIzq))
-		#print("velocidad der: " + str(velocidadMotorDer))
-
-	if (velocidadMotorDer >= 100):
-		velocidadMotorDer=100
-	elif (velocidadMotorDer <= - 100):
-		velocidadMotorDer=-100
-	if(velocidadMotorIzq >= 100):
-		velocidadMotorIzq=100
-	elif (velocidadMotorIzq <= - 100):
-		velocidadMotorIzq=-100
+	if (velocidadMotorDer >= configuracion.resolucionPWM):
+		velocidadMotorDer=configuracion.resolucionPWM
+	elif (velocidadMotorDer <= - configuracion.resolucionPWM):
+		velocidadMotorDer=-configuracion.resolucionPWM
+	if(velocidadMotorIzq >= configuracion.resolucionPWM):
+		velocidadMotorIzq=configuracion.resolucionPWM
+	elif (velocidadMotorIzq <= - configuracion.resolucionPWM):
+		velocidadMotorIzq=-configuracion.resolucionPWM
 		
 	
 	if(velocidadMotorDer>0):
@@ -77,9 +69,11 @@ def runMotor(motor, vel, direccion): #motor 0: derecha
 		if (motor == 0):	#motor derecho
 			GPIO.output(configuracion.AIN1, in1)
 			GPIO.output(configuracion.AIN2, in2)
+			vel = vel * (100/configuracion.resolucionPWM)		#se realiza el mapeo de 0-1024 (resolucionPWM) a 0-100
 			pwma.ChangeDutyCycle(vel)
 
 		elif (motor == 1):	#motor izquierdo
 			GPIO.output(configuracion.BIN1, in2)
 			GPIO.output(configuracion.BIN2, in1)
+			vel = vel * (100/configuracion.resolucionPWM)		#se realiza el mapeo de 0-1024 (resolucionPWM) a 0-100
 			pwmb.ChangeDutyCycle(vel)

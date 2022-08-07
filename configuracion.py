@@ -23,7 +23,7 @@ encoder1D=19
 encoder2D=21
 encoder1L=23
 encoder2L=24
-resolucionPWM = 100
+resolucionPWM = 1023    #asi llamada resolucion, es el valor maximo que genera el controlador
 N = 0.01 
 CPR = 28 
 l = 5.6 
@@ -31,6 +31,9 @@ linea = 1
 radioRueda = 2
 d1=52
 d2=32
+
+global freqPWM  #frecuencia pwm
+freqPWM=500 
 
 global SIGNAL, S0, S1, S2, S3   #definicion de pines del multiplexor
 global channel, address #constantes para I2C
