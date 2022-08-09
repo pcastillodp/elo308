@@ -77,7 +77,7 @@ theta_ref = 0         #quiero que este justo al centro
 vel_ref = 5            #velocidad de referencia
 d_ref = 10				#20 cm
 sat_theta=1023
-sat_vel=100
+sat_vel=1023
 sat_d=40
 
 #declaracion de ip

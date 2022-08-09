@@ -209,10 +209,10 @@ def estado_predecesor(len_data):
         if(gl.flag_saturacion_predecesor):
             configuracion.sat_d = float(valores[3])
 
-        if (float(valores[3]) >= 0):
-            configuracion.sat_d = 1 * float(valores[3]) + 1
-        else:
-            configuracion.sat_d = -1 * float(valores[3]) + 1
+            if (float(valores[3]) >= 0):
+                configuracion.sat_d = 1 * float(valores[3]) + 1
+            else:
+                configuracion.sat_d = -1 * float(valores[3]) + 1
 
         if(gl.flag_control):
             gl.vel_crucero = float(valores[2])
