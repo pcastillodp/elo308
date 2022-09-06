@@ -6,3 +6,6 @@ https://youtu.be/5N0aO_AN-OQ
 
 demo comunicacion UDP con ESP y Raspberry
 https://youtu.be/qxACCAzTVsM
+
+Video test de batería
+https://www.youtube.com/watch?v=Gxpx8howYdQ
