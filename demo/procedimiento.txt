@@ -58,3 +58,6 @@ if chip_id not in (_L3GD20_CHIP_ID, _L3GD20H_CHIP_ID, _L3GD20X_CHIP_ID):
 
 gyro = adafruit_l3gd20.L3GD20_I2C(i2c,rng=adafruit_l3gd20.L3DS20_RANGE_250DPS, address=0x69)
 
+instalar OpenCV:
+sudo apt-get install libatlas-base-dev
+
