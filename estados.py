@@ -109,7 +109,7 @@ def ciclo_de_control():
 		if(gl.flag_saturacion_predecesor):
 			gl.Output_d=calculoPIDd(gl.Input_d, configuracion.d_ref, gl.error_ant_d, gl.integral_d, gl.Kp_d, gl.Ki_d, gl.Kd_d, configuracion.sat_d, gl.PID_d, gl.Output_d, "INVERSO")
 		else:
-			gl.Output_d=calculoPID(gl.Input_d, configuracion.d_ref, gl.error_ant_d, gl.integral_d, gl.Kp_d, gl.Ki_d, gl.Kd_d, configuracion.sat_d, gl.PID_d, gl.Output_d, "INVERSO")
+			gl.Output_d=calculoPIDd(gl.Input_d, configuracion.d_ref, gl.error_ant_d, gl.integral_d, gl.Kp_d, gl.Ki_d, gl.Kd_d, configuracion.sat_d, gl.PID_d, gl.Output_d, "INVERSO")
 		if (gl.flag_robot == "L"):
 			configuracion.vel_ref=gl.sp_vel
 		else:
