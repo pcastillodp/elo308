@@ -107,7 +107,7 @@ def velocidades():	#calcula velocidades, y la entrada del controlador PID de vel
 	#curva=2.3333*abs(((0.9*(v_r[1]+v_r[2]+v_r[3]+v_r[4])/4) + 0.1*v_r[0])-((0.9*(v_l[1]+v_l[2]+v_l[3]+v_l[4])/4) + 0.1*v_l[0]))
 	v_r[0]=(0.2*(v_r[1]+v_r[2]+v_r[3]+v_r[4])/4) + 0.8*v_r[0]	#filtra velocidades que se escapen
 	v_l[0]=(0.2*(v_l[1]+v_l[2]+v_l[3]+v_l[4])/4) + 0.8*v_l[0]
-	gl.Input_vel=0.5*(v_r[0]+v_l[0]) # [cm/s]	#promedio de velocidades actuales R y L
+	gl.Input_vel=0.5*(v_r[0]+v_l[0])*3 # [cm/s]	#promedio de velocidades actuales R y L
 	#ang_vel=0.5*(v_r[0]-v_l[0])/configuracion.l
 	#gl.t_actual = time.time() - gl.t_arco
 	#s_l+=abs(v_l[0]*configuracion.t_actual)
