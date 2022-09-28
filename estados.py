@@ -207,7 +207,7 @@ def calculoPIDd (y, ref, error_ant, error_integral, kp, ki, kd, limite, MODO, ou
 
 		if(u> (limite * 1.1 + 1)):
 			return limite * 1.1 + 1
-		elif (u< (limite * 0.9 - 1)):
-			return limite * 0.9 - 1
+		elif (u< (-limite * 0.9 + 1)):
+			return -limite * 0.9 + 1
 		else:
 			return u
