@@ -152,7 +152,7 @@ def setup_udp():
 
 def udp_monitor():
     cadena = gl.flag_robot + "," +  str(gl.t_actual)  + "," +  str(gl.Input_d)  + "," +  str(configuracion.d_ref)  + "," +  str(configuracion.vel_ref)  + "," +  str(gl.Input_vel)  + "," +  str(gl.Input_theta)  + "," +  str(gl.Output_d)  + "," +   str(gl.Output_vel)  + "," +  str(gl.Output_theta)  + "," +  str(gl.curvatura) + "," +  str(gl.vel_crucero)  + "," +  str(gl.curvatura_predecesor)  + "," +  str(gl.control)    
-    cadena2 = gl.flag_robot + "," + str(gl.Input_vel)  + "," +  str(configuracion.vel_ref) + "," + str(gl.error_ant_vel[0]) + "," +  str(gl.Output_vel) + "," + str(gl.Input_theta)  + "," +  str(configuracion.theta_ref) + "," + str(gl.error_ant_theta[0]) + "," +  str(gl.Output_theta) + "," + str(gl.Input_d)  + "," +  str(configuracion.d_ref) + "," + str(gl.error_ant_d[0]) + "," +  str(gl.Output_d)  
+    cadena2 = gl.flag_robot + "," + str(gl.Input_vel)  + "," +  str(configuracion.vel_ref) + "," + str(gl.error_ant_vel[0]) + "," +  str(gl.Output_vel)  + "," + str(gl.Kp_vel) + "," + str(gl.Ki_vel) + "," + str(gl.Kd_vel)  + "," + str(gl.Input_theta)  + "," +  str(configuracion.theta_ref) + "," + str(gl.error_ant_theta[0]) + "," +  str(gl.Output_theta) + "," + str(gl.Kp_theta) + "," + str(gl.Ki_theta) + "," + str(gl.Kd_theta) + "," + str(gl.Input_d)  + "," +  str(configuracion.d_ref) + "," + str(gl.error_ant_d[0]) + "," +  str(gl.Output_d)  + "," + str(gl.Kp_d) + "," + str(gl.Ki_d) + "," + str(gl.Kd_d)
     msg = str.encode(cadena2)
     if(gl.flag_debug_udp):
         print("voy a enviar al monitor la cadena : " + cadena)
