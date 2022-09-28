@@ -78,7 +78,7 @@ vel_ref = 5            #velocidad de referencia
 d_ref = 10				#20 cm
 sat_theta=1023
 sat_vel=1023
-sat_d=40
+sat_d=1023
 
 #declaracion de ip
 global monitor, lider, seguidor1, seguidor2, seguidor3, bufferSize

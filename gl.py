@@ -4,7 +4,7 @@ import configuracion
 
 #FALTA IMPLEMENTAR#
 global control
-control = False
+control = 0.0
 
 #flags para debug
 flag_debug = True      #activa los print

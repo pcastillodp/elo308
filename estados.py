@@ -57,9 +57,11 @@ def ciclo_de_control():
 
 	sensores.velocidades()	
 	sensores.curvaturaPista()
-
+ 
+	gl.control = ((gl.curvatura_predecesor <= 0.01) and (gl.curvatura <= 0.01))
+	
 	if (gl.flag_control):
-		gl.control = ((gl.curvatura_predecesor <= 0.01) and (gl.curvatura <= 0.01))
+		gl.control = 0
 	
 	if (gl.Output_vel<0):		#calcula entrada de PID angulo linea			
 		gl.Input_theta=-1*sensores.obtenerPosicion(0)/configuracion.d2		#recorrido inverso
@@ -183,6 +185,7 @@ def calculoPID (y, ref, error_ant, error_integral, kp, ki, kd, limite, MODO, out
 			return u
 
 def calculoPIDd (y, ref, error_ant, error_integral, kp, ki, kd, limite, MODO, out_manual, direccion):
+	print("hola, estoy en modo: " + str(MODO) + " y mi control es " + str(gl.control))
 	if (MODO == "MANUAL"):
 		return out_manual
 	
@@ -192,6 +195,7 @@ def calculoPIDd (y, ref, error_ant, error_integral, kp, ki, kd, limite, MODO, ou
 		elif(direccion =="INVERSO"):
 			error=y-ref
 		error_integral[0] = error_integral[0] + error*gl.t_actual
+		print("error integral antes de saturar: " + str(error_integral[0]))
 		if(error_integral[0] * ki > limite):
 			error_integral[0] = limite /ki
 		elif(ki*error_integral[0] < -limite):
