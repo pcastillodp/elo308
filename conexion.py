@@ -152,7 +152,8 @@ def setup_udp():
 
 def udp_monitor():
     cadena = gl.flag_robot + "," +  str(gl.t_actual)  + "," +  str(gl.Input_d)  + "," +  str(configuracion.d_ref)  + "," +  str(configuracion.vel_ref)  + "," +  str(gl.Input_vel)  + "," +  str(gl.Input_theta)  + "," +  str(gl.Output_d)  + "," +   str(gl.Output_vel)  + "," +  str(gl.Output_theta)  + "," +  str(gl.curvatura) + "," +  str(gl.vel_crucero)  + "," +  str(gl.curvatura_predecesor)  + "," +  str(gl.control)    
-    msg = str.encode(cadena)
+    cadena2 = gl.flag_robot + "," + str(gl.Input_vel)  + "," +  str(configuracion.vel_ref) + "," + str(gl.error_ant_vel[0]) + "," +  str(gl.Output_vel) + "," + str(gl.Input_theta)  + "," +  str(configuracion.theta_ref) + "," + str(gl.error_ant_theta[0]) + "," +  str(gl.Output_theta) + "," + str(gl.Input_d)  + "," +  str(configuracion.d_ref) + "," + str(gl.error_ant_d[0]) + "," +  str(gl.Output_d)  
+    msg = str.encode(cadena2)
     if(gl.flag_debug_udp):
         print("voy a enviar al monitor la cadena : " + cadena)
     socket_udp.sendto(msg, configuracion.monitor)
