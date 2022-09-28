@@ -16,7 +16,7 @@ flag_calibrar = True   #activa la rutina de calibracion de los sensores IR
 flag_peloton = True     #activa la funcionalidad multiagente
 flag_robot = "L"        #Lider por defecto
 flag_control = True     # activa switche curvatura
-flag_saturacion_predecesor = False  ##preguntar!!!!       <---------------------------
+flag_saturacion_predecesor = True  ##preguntar!!!!       <---------------------------
 
 #para comunicacion UDP
 global data
