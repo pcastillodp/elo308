@@ -1,0 +1,65 @@
+sudo apt update
+sudo apt upgrade
+sudo reboot
+
+github
+sudo apt install -y git
+git config --global user.name "pcastillodp"
+git config --global user.email "polet.castillo.14@sansano.usm.cl"
+mkdir github
+cd github
+git clone https://github.com/pcastillodp/elo308.git
+
+python
+sudo apt install -y build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev
+sudo apt install python
+sudo apt install python-pip-whl
+sudo apt install python3
+sudo apt install python3-pip
+sudo python3 -m pip install --upgrade pip
+sudo reboot
+*en geany>construir>establecer comandos de contruccion; cambiar python por python3
+pip install RPI.GPIO
+pip install Encoder
+**se debe modificar esta libreria
+cd /home/pi/.local/lib/python3.9/site-packages/Encoder
+nano encoder.py
+* cambiar GPIO.setmode(GPIO.BCM) por GPIO.setmode(GPIO.BOARD)
+* agregar: 
+	def write(self,num):
+ 	       self.pos = num
+*ctrl + O; ctrl + X
+pip install smbus2
+pip install Adafruit-ADS1x15
+pip install git+https://github.com/pimoroni/VL53L0X-python.git
+pip install paho-mqtt
+
+### IMU 9DOF
+pip install adafruit-circuitpython-l3gd20
+pip install adafruit-circuitpython-lsm303dlh-mag
+pip install adafruit-circuitpython-lsm303-accel
+
+* editar el archivo de la biblioteca del gyroscopio, ya que, el sensor no es original y no tiene ni la i2c_address esperada ni el chip_id esperado
+
+nano /home/pi/.local/lib/python3.9/site-packages/adafruit_l3gd20.py
+
+* agregar junto a las demas definiciones de CHIP_ID lo siguiente
+
+_L3GD20X_CHIP_ID = const(0xD3) #chip id chino (no original)
+
+* luego en la definición de la clase, dentro del método __init__ en donde se verifica el chip id, agregar en la tupla el chip id agregado arriba,
+quedaría algo así
+
+if chip_id not in (_L3GD20_CHIP_ID, _L3GD20H_CHIP_ID, _L3GD20X_CHIP_ID):
+
+* guardar con Ctrl+O
+* cerrar con Ctrl+X
+* al ocupar la bilbioteca del gyroscopio no usar el constructor por defecto, sino que usar este con la address=0x69
+
+gyro = adafruit_l3gd20.L3GD20_I2C(i2c,rng=adafruit_l3gd20.L3DS20_RANGE_250DPS, address=0x69)
+
+instalar OpenCV:
+sudo apt-get install libatlas-base-dev
+
+para convertir a mp4:
+sudo apt-get install gpac 
