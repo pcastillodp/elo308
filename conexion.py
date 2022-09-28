@@ -118,7 +118,7 @@ def udp_transm():   #Transmite informacion al robot sucesor
     global socket_udp
     gl.t_actual = time.time() - gl.t_com_predecesor
     if (gl.t_actual >= 0.1):    #0.1 segundo
-        cadena = "V/" + gl.parar + "/" + str(gl.Input_vel) + "/" + str(gl.vel_ref) + "/" + str(gl.curvatura)
+        cadena = "V/" + gl.parar + "/" + str(gl.Input_vel) + "/" + str(configuracion.vel_ref) + "/" + str(gl.curvatura)
         msg = str.encode(cadena)
         if(gl.flag_robot == "L"): sucesor = configuracion.seguidor1
         elif (gl.flag_robot == "S1"): sucesor = configuracion.seguidor2
@@ -176,7 +176,7 @@ def lectura_estado(len_data):
     if(gl.flag_debug_udp):
         print("funcion enviar informacion a sucesor")
     if (mensaje == "L/estado_predecesor"):
-        cadena = "V/" + gl.parar + "/" + str(gl.Input_vel) + "/" + str(gl.vel_ref) + "/" + str(gl.curvatura_predecesor)
+        cadena = "V/" + gl.parar + "/" + str(gl.Input_vel) + "/" + str(configuracion.vel_ref) + "/" + str(gl.curvatura_predecesor)
     else:
         cadena = "incorrecto"
     for i in range (3):
