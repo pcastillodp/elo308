@@ -63,4 +63,3 @@ sudo apt-get install libatlas-base-dev
 
 para convertir a mp4:
 sudo apt-get install gpac 
-
