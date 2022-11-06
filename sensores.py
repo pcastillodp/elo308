@@ -55,6 +55,7 @@ def calibrarSensores():		#calibrar sensores IR
 			gl.maximo[s] = valor if (valor > gl.maximo[s]) else (gl.maximo[s])
 			gl.minimo[s] = valor if (valor < gl.minimo[s]) else (gl.minimo[s])
 			time.sleep(0.001)
+			print("leido: " + str(gl.maximo[s]))
 
 	if(gl.flag_debug):	
 		print("listo, ahora voy a volver a la linea")

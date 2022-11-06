@@ -131,7 +131,7 @@ def ciclo_de_control():
 			print("ref: " + str(configuracion.vel_ref) + " sp_vel: " + str(gl.sp_vel))
 			print("error_ant: " + str(gl.error_ant_vel[0]))
 			print("Output: " + str(gl.Output_vel))
-			print("KP : " + str(gl.Kp_vel) + " KI: " +  str(gl.Ki_vel) + " KD: "+  str(gl.Ki_vel))
+			print("KP : " + str(gl.Kp_vel) + " KI: " +  str(gl.Ki_vel) + " KD: "+  str(gl.Kd_vel))
 			print("\n******THETA	**")
 			print("Input: " + str(gl.Input_theta))
 			print("ref: " + str(configuracion.theta_ref))
