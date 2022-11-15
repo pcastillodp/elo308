@@ -12,7 +12,7 @@ import csv
 import socket
 import datetime
 #Ajustables
-file_name = ".\\monitoreo_distancia_2.csv"  # archivo csv
+file_name = ".\\monitoreo_seguimiento_distancia.csv"  # archivo csv
 
 UDP_IP = "192.168.100.9" # ip del computador que recibe datos (mismo que el que corre este script)
 UDP_PORT = 1234
