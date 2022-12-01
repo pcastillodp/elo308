@@ -1,5 +1,5 @@
-# elo308
-documentos y codigos usados para mi trabajo de titulo
+# RUPU - Raspi
+Documentos y codigos usados para la actualización de la plataforma RUPU Raspberry.
 
 demo comunicacion UDP con 3 Raspberries
 https://youtu.be/5N0aO_AN-OQ
